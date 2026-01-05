@@ -55,11 +55,84 @@ Visual Studio でソリューションを開き、
 
 ---
 
+## UI（フォーム）の触り方
+
+### 場所と役割
+- `Baccarat.Server/Forms/FormServer.vb` サーバの UI（待機、ログ表示）
+- `Baccarat.Client/Forms/FormLobby.vb` クライアント接続画面（IP入力、ニックネーム、接続ボタン）
+- `Baccarat.Client/Forms/FormGame.vb` ゲーム進行画面（ベット、結果表示）
+- `Baccarat.Client/Forms/FormRules.vb` ルール参照ウィンドウ（常時表示可能）
+
+### フォーム編集の手順
+1. **Visual Studio でフォームを開く**
+   - ソリューション エクスプローラー → 該当フォーム（例: `FormServer.vb`） → ダブルクリック
+   - デザインビューが開きます
+
+2. **コントロール追加**
+   - ツールボックスから TextBox / Button / Label などを、フォームにドラッグして配置
+   - プロパティウィンドウ（F4）で Name / Text などを設定
+
+3. **命名規約**
+   - TextBox: `txt...` （例: `txtNickname`）
+   - Button: `btn...` （例: `btnConnect`）
+   - Label: `lbl...` （例: `lblStatus`）
+   - GroupBox: `grp...` （例: `grpBet`）
+   - TabControl: `tab...` （例: `tabRules`）
+
+4. **イベント接続**
+   - ボタンをダブルクリック → `btnXxx_Click` ハンドラが自動生成される
+   - この中に処理を書く（例: 接続ボタンを押したら `openAsClient(...)` を呼ぶ）
+
+### ログ表示の例（コード）
+```visualbasic
+' TextBox にログを追記する（FormServer / FormLobby 等で使用）
+Private Sub AppendLog(message As String)
+    txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] {message}" & vbCrLf)
+    ' 末尾にスクロール
+    txtLog.SelectionStart = txtLog.TextLength
+    txtLog.ScrollToCaret()
+End Sub
+```
+
+### Phase による UI の有効/無効（例）
+```visualbasic
+' FormGame で Phase に応じてボタンを制御
+Private Sub ApplyPhase(phase As String)
+    Select Case phase
+        Case "BETTING"
+            grpBet.Enabled = True  ' ベット入力を有効化
+            btnNext.Enabled = False
+        Case "RESULT"
+            grpBet.Enabled = False
+            btnNext.Enabled = True  ' 次へボタンを有効化
+        Case Else
+            grpBet.Enabled = False
+            btnNext.Enabled = False
+    End Select
+End Sub
+```
+
+### TcpSocket の接続（FormServer 例）
+```visualbasic
+' FormServer.Designer.vb の Load で、TcpSocket を貼り付けて SynchronizingObject を設定
+Private Sub FormServer_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    ' TcpSocket コンポーネント（デザイナで追加）
+    ' tcpSockets.SynchronizingObject = Me  （重要: UI スレッドでイベントを受ける）
+    
+    ' サーバ待機開始
+    tcpSockets.OpenAsServer(9000)  ' ポート番号はプレースホルダ
+    AppendLog("Server waiting...")
+End Sub
+```
+
+---
+
 ## 連絡・注意
 
 - UI と通信は同時に触ると壊れやすいので、
   可能なら「通信タスク」「UIタスク」を分けて進めるのがおすすめです。
 - 受信イベントは、受信が分割/結合することがあります。まず **行フレーミング** を優先で作る方針です。
+- フォーム追加・削除時は、`My Project/Application.myapp` の設定がズレないか確認してください。
 
 ---
 
