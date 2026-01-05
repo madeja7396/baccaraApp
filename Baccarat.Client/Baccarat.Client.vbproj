@@ -35,7 +35,8 @@
 
   <ItemGroup>
     <Reference Include="Experiment.TcpSocket">
-      <HintPath>bin\Experiment.TcpSocket.dll</HintPath>
+      <HintPath>..\lib\Experiment.TcpSocket.dll</HintPath>
+      <Private>true</Private>
     </Reference>
   </ItemGroup>
 
