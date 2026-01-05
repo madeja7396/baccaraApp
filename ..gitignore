@@ -1,0 +1,43 @@
+# Visual Studio / VB.NET specific
+bin/
+obj/
+.vs/
+*.dll
+*.exe
+*.pdb
+*.suo
+*.user
+*.userprefs
+*.aps
+*.sln.docstates
+
+# Build folders
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+
+# Local packages
+.packages/
+packages.config
+
+# User-specific files
+*.rsuser
+.idea/
+
+# IDE config
+.idea/
+.vscode/
+
+# MacOS
+.DS_Store
+
+# Temporary files
+*.tmp
+*.bak
+*~
+
+# Test Results
+TestResults/
