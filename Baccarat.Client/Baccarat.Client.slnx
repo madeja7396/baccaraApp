@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/ソリューション項目/">
+    <File Path="../../../wsl/Ubuntu/apps/Baccara/docs/CONTEXT.md" />
+  </Folder>
+  <Project Path="../Baccarat.Server/Baccarat.Server.vbproj" />
+  <Project Path="../Baccarat.Shared/Baccarat.Shared.vbproj" />
+  <Project Path="Baccarat.Client.vbproj" />
+</Solution>

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace></RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="My Project\**\*.vb" />
+    <None Remove="My Project\**\*.*" />
+    <Compile Remove="ApplicationEvents.vb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Constants.vb" />
+    <Compile Include="Protocol\**\*.vb" />
+    <Compile Include="Model\**\*.vb" />
+    <Compile Include="Rules\**\*.vb" />
+    <Compile Include="Util\**\*.vb" />
+  </ItemGroup>
+
+</Project>
