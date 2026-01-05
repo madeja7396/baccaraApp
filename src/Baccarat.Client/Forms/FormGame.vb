@@ -18,15 +18,15 @@ Namespace Baccarat.Client.Forms
             btnRules.Enabled = True
         End Sub
 
-        Private Sub btnBetLock_Click(sender As Object, e As EventArgs) Handles btnBetLock.Click
+        Private Sub btnBetLock_Click(sender As Object, e As EventArgs)
             ' TODO: send BET command
         End Sub
 
-        Private Sub btnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
+        Private Sub btnNext_Click(sender As Object, e As EventArgs)
             ' TODO: request next round or notify server
         End Sub
 
-        Private Sub btnRules_Click(sender As Object, e As EventArgs) Handles btnRules.Click
+        Private Sub btnRules_Click(sender As Object, e As EventArgs)
             ' TODO: show FormRules (single instance)
         End Sub
 

@@ -10,11 +10,11 @@ Namespace Baccarat.Client.Forms
             _logger = New Logger(AddressOf AppendLog)
         End Sub
 
-        Private Sub FormLobby_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Private Sub FormLobby_Load(sender As Object, e As EventArgs)
             ' TODO: hook TcpSockets events and ApplyConnState
         End Sub
 
-        Private Sub btnConnect_Click(sender As Object, e As EventArgs) Handles btnConnect.Click
+        Private Sub btnConnect_Click(sender As Object, e As EventArgs)
             ' TODO: validate IP/Nickname and OpenAsClient
         End Sub
 
