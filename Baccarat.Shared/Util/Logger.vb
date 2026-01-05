@@ -1,7 +1,7 @@
 Imports System
 Imports System.IO
 
-Namespace Baccarat.Shared.Util
+Namespace Util
     ' Lightweight logger that can write to UI callback and optional file.
     Public Class Logger
         Private ReadOnly _writeAction As Action(Of String)

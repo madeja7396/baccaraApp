@@ -1,7 +1,7 @@
 Imports System.Collections.Generic
-Imports Baccarat.Shared.Rules
+Imports Rules
 
-Namespace Baccarat.Shared.Model
+Namespace Model
     Public Class Hand
         Public ReadOnly Property Cards As List(Of Card)
 

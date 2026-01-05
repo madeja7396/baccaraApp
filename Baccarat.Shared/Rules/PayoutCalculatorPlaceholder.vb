@@ -1,6 +1,6 @@
-Imports Baccarat.Shared.Protocol
+Imports Protocol
 
-Namespace Baccarat.Shared.Rules
+Namespace Rules
     ' シンプルな配当計算（プレースホルダ）
     Public Class PayoutCalculatorPlaceholder
         Implements IPayoutCalculator

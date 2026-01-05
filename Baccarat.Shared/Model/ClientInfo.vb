@@ -1,4 +1,4 @@
-Namespace Baccarat.Shared.Model
+Namespace Model
     Public Class ClientInfo
         Public Property Handle As Integer ' TcpSockets handle placeholder
         Public Property PlayerId As Integer

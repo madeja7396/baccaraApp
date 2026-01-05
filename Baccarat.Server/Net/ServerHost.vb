@@ -4,7 +4,24 @@ Imports Baccarat.Shared.Rules
 Imports Baccarat.Shared.Util
 
 Namespace Net
-    ' Server-side coordinator (Experiment.TcpSocket を後で接続)
+    ''' <summary>
+    ''' サーバー側のメイン制御クラス
+    ''' </summary>
+    ''' <remarks>
+    ''' 【バックエンド開発者向け実装ガイド】
+    ''' 
+    ''' このクラスは、以下の役割を担います：
+    ''' 1. TCP接続の管理 (Experiment.TcpSocket.Server のラッパー)
+    ''' 2. クライアントからのコマンド受信と振り分け (HandleHello, HandleBet 等)
+    ''' 3. ゲーム進行 (Phase) の管理と、全クライアントへの状態通知 (Broadcast)
+    ''' 
+    ''' [実装の流れ]
+    ''' - StartServer: 指定ポートでリッスン開始。
+    ''' - OnAccept: クライアント接続を受け入れ、一時リストに追加。
+    ''' - OnLineReceived: 受信した文字列を Parser で解析し、コマンドごとにメソッドを呼び出す。
+    ''' - HandleXxx: 各コマンドのロジックを実装。バリデーション(フェーズ確認、チップ残高確認)はここで行う。
+    ''' - Broadcast: 状態変化があれば、接続中の全クライアントに新しい情報を送信する。
+    ''' </remarks>
     Public Class ServerHost
         Private ReadOnly _logger As Logger
         Private ReadOnly _rules As IBaccaratRules

@@ -1,7 +1,7 @@
 Imports System
 Imports System.Linq
 
-Namespace Baccarat.Shared.Protocol
+Namespace Protocol
     Public Module Parser
         Public Function TryParse(line As String, ByRef message As Message) As Boolean
             If String.IsNullOrWhiteSpace(line) Then Return False

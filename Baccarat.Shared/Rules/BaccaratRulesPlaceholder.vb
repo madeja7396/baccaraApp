@@ -1,10 +1,10 @@
 Imports System
 Imports System.Collections.Generic
-Imports Baccarat.Shared.Model
-Imports Baccarat.Shared.Protocol
+Imports Model
+Imports Protocol
 Imports System.Linq
 
-Namespace Baccarat.Shared.Rules
+Namespace Rules
     ' 初期段階の簡易ルール（第三カードなし）
     Public Class BaccaratRulesPlaceholder
         Implements IBaccaratRules

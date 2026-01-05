@@ -1,6 +1,20 @@
 Imports System
 
-Namespace Baccarat.Shared.Protocol
+Namespace Protocol
+    ''' <summary>
+    ''' 通信メッセージのデータ構造
+    ''' </summary>
+    ''' <remarks>
+    ''' 【通信プロトコル仕様】
+    ''' 
+    ''' - 形式: テキストベース (CSV風)
+    ''' - 区切り文字: カンマ (`,`)
+    ''' - 終端文字: 改行 (`\n`)
+    ''' - 構成: `COMMAND,Param1,Param2,...`
+    ''' 
+    ''' (例) `HELLO,Yamada`
+    '''      `PHASE,BETTING,1`
+    ''' </remarks>
     Public Class Message
         Public Property Command As String
         Public Property Params As String()

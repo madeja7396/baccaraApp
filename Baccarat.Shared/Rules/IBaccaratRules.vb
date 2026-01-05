@@ -1,7 +1,7 @@
-Imports Baccarat.Shared.Model
-Imports Baccarat.Shared.Protocol
+Imports Model
+Imports Protocol
 
-Namespace Baccarat.Shared.Rules
+Namespace Rules
     Public Interface IBaccaratRules
         Function ComputeScore(hand As Hand) As Integer
         Sub DealInitial(state As GameState)

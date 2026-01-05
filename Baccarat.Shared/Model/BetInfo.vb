@@ -1,6 +1,6 @@
-Imports Baccarat.Shared.Protocol
+Imports Protocol
 
-Namespace Baccarat.Shared.Model
+Namespace Model
     Public Class BetInfo
         Public Property Target As BetTarget
         Public Property Amount As Integer

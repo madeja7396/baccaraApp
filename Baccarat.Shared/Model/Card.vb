@@ -1,4 +1,4 @@
-Namespace Baccarat.Shared.Model
+Namespace Model
     Public Class Card
         Public Property Suit As Char ' S/H/D/C
         Public Property Rank As Integer ' 1..13

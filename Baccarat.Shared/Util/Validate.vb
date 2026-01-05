@@ -1,7 +1,7 @@
 Imports System.Text.RegularExpressions
-Imports Baccarat.Shared.Model
+Imports Model
 
-Namespace Baccarat.Shared.Util
+Namespace Util
     Public Module Validate
         Private ReadOnly IpPattern As New Regex("^(?:\\d{1,3}\\.){3}\\d{1,3}$")
 

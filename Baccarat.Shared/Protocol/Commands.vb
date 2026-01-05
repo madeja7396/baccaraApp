@@ -1,6 +1,6 @@
 Imports System
 
-Namespace Baccarat.Shared.Protocol
+Namespace Protocol
     Public Enum GamePhase
         LOBBY
         BETTING

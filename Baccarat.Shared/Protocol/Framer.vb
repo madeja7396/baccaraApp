@@ -1,6 +1,6 @@
 Imports System.Text
 
-Namespace Baccarat.Shared.Protocol
+Namespace Protocol
     ' Line-oriented framer to reconstruct messages split by TCP.
     Public Class LineFramer
         Private ReadOnly _buf As New StringBuilder()
