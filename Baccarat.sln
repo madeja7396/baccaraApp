@@ -2,11 +2,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Baccarat.Shared", "src\Baccarat.Shared\Baccarat.Shared.vbproj", "{3B7D3C54-5D0A-4BA3-8E5E-01C2C342C947}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Baccarat.Shared", "Baccarat.Shared\Baccarat.Shared.vbproj", "{3B7D3C54-5D0A-4BA3-8E5E-01C2C342C947}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Baccarat.Server", "src\Baccarat.Server\Baccarat.Server.vbproj", "{4D2F3E6E-5D19-49B9-9F3A-5A60B3B7D9DB}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Baccarat.Server", "Baccarat.Server\Baccarat.Server.vbproj", "{4D2F3E6E-5D19-49B9-9F3A-5A60B3B7D9DB}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Baccarat.Client", "src\Baccarat.Client\Baccarat.Client.vbproj", "{8F1C6F7E-1E59-4D0C-8B13-7C6AA3BDB6A4}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Baccarat.Client", "Baccarat.Client\Baccarat.Client.vbproj", "{8F1C6F7E-1E59-4D0C-8B13-7C6AA3BDB6A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,187 +1,47 @@
-# Baccarat ƒvƒƒWƒFƒNƒg is“xƒŒƒ|[ƒgi2026-01-06j
+# Baccarat ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ é€²æ—ãƒ¬ãƒãƒ¼ãƒˆ (2026-01-06)
 
-> Šî€F`TASKS.md` ‚É‚¨‚¯‚é P0iÅ—Dæjƒ^ƒXƒN‚ÌŽÀ‘•ó‹µ
+> åŸºæº–: `TASKS.md` ã«ãŠã‘ã‚‹ P0 (æœ€å„ªå…ˆ) ã‚¿ã‚¹ã‚¯ã®å®Ÿè£…
 
 ---
 
-## ŠT—v
+## æ¦‚æ³
 
-| €–Ú | ó‘Ô | i’» |
+| é …ç›® | çŠ¶æ…‹ | é€²æ— |
 |---|---|---|
-| **ƒrƒ‹ƒh** | ? ¬Œ÷ | 100% |
-| **Šî”Õ®”õiT0j** | ?? •”•ª‘Î‰ž | 33% |
-| **sƒtƒŒ[ƒ~ƒ“ƒOiT1j** | ? –¢’…Žè | 0% |
-| **Ú‘±EHELLO/WELCOMEiT2j** | ? –¢’…Žè | 0% |
-| **READYEPhase§ŒäiT3j** | ? –¢’…Žè | 0% |
-| **BETE”zŽDEŒ‹‰ÊiT4j** | ? •”•ªŽÀ‘• | 10% |
-| **UI—vŒiT5j** | ? –¢’…Žè | 0% |
-| **ˆÙíŒniT6j** | ? –¢’…Žè | 0% |
-| **ƒhƒLƒ…ƒƒ“ƒg** | ? Š®”õ | 100% |
+| **ãƒ“ãƒ«ãƒ‰** | å®Œäº† | 100% |
+| **ç’°å¢ƒæ§‹ç¯‰ (T0)** | å®Œäº† | 100% |
+| **é€šä¿¡ãƒ•ãƒ¬ãƒ¼ãƒŸãƒ³ã‚° (T1)** | æœªç€æ‰‹ | 0% |
+| **æŽ¥ç¶šãƒ»HELLO (T2)** | æœªç€æ‰‹ | 0% |
+| **READYãƒ»Phase (T3)** | æœªç€æ‰‹ | 0% |
+| **BETãƒ»åˆ¤å®š (T4)** | æœªç€æ‰‹ | 0% |
+| **UIå®Ÿè£… (T5)** | æœªç€æ‰‹ | 0% |
+| **ãã®ä»– (T6)** | æœªç€æ‰‹ | 0% |
+| **ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆ** | å®Œäº† | 100% |
 
 ---
 
-## Ú×
+## è©³ç´°
 
-### ? ƒrƒ‹ƒh®‡«i100%j
+### ãƒ“ãƒ«ãƒ‰ç’°å¢ƒ (100%)
+- **2026-01-06**: `src/` é…ä¸‹ã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’ãƒ«ãƒ¼ãƒˆç›´ä¸‹ã«ç§»å‹•ã—ã€`Baccarat.sln` ã®ãƒ‘ã‚¹ã‚’ä¿®æ­£ã€‚`app/` ãªã©ã®ä¸è¦ãƒ•ã‚©ãƒ«ãƒ€ã‚’å‰Šé™¤ã€‚
+- å…¨ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ (`Client`, `Server`, `Shared`) ã®æ•´åˆæ€§ã‚’ç¢ºä¿ã€‚
 
-**Š®—¹€–Ú**
-- `Baccarat.Shared`iƒ‰ƒCƒuƒ‰ƒŠjF`net10.0`ACompile Include –¾Ž¦‰»
-- `Baccarat.Client`iWinFormsjF`net10.0-windows`AŽQÆ“ˆê
-- `Baccarat.Server`iWinFormsjF`net10.0-windows`AŽQÆ“ˆê
-- `RootNamespace` Ý’èFSharedi‹ój/ ServeriBaccarat.Serverj
-- 3ƒvƒƒWƒFƒNƒg‘S‚Äƒrƒ‹ƒh¬Œ÷
+### T0: ç’°å¢ƒæ§‹ç¯‰ (100%)
+- **T0-01**: `Experiment.TcpSocket.dll` ã®å‚ç…§ã‚’ `lib/` ã«çµ±ä¸€ (å®Œäº†)
+- **T0-02**: Copy Local = True ã‚’ç¢ºèª (å®Œäº†)
+- **T0-03**: `RootNamespace` ã®è¨­å®šã‚’ç¢ºèª (å®Œäº†)
 
----
-
-### ?? T0: Šî”Õ®”õi33%j
-
-| ID | ó‘Ô | à–¾ |
-|---|---|---|
-| **T0-01** | ? –¢‘Î‰ž | `Experiment.TcpSocket.dll` ‚ÌŽQÆƒpƒX‚ª `..\Baccarat.Client\bin\Experiment.TcpSocket.dll` ‚Ì‚Ü‚Ü‚ÅAŠÂ‹«ˆË‘¶B`lib/` ‚ÉˆÚ‚·ì‹Æ‚ª•K—v |
-| **T0-02** | ? Šm”FÏ | Copy Local ‚ÍŽQÆ‚É“ü‚Á‚Ä‚¢‚é‚ªAŽÀsŽž‚ÉƒRƒs[‚³‚ê‚é‚©—vŠm”Fiƒrƒ‹ƒho—Í‚ðŒ©‚Ä‚¢‚È‚¢j |
-| **T0-03** | ? Š®—¹ | Server ‚Ì `MainForm` ‚Í `Baccarat.Server.My.MyApplication` ‚Å“ˆêA“ñd–¼‚ð‰ðÁ |
-
-**ŽŸ‚ÌƒAƒNƒVƒ‡ƒ“FT0-01 ‚ð‰ðŒˆiDLL ŒÅ’è‰»j**
+### æ¬¡ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ (T1/T2)
+1. **T1-01**: `Framer.vb` ã‚’ç”¨ã„ãŸè¡Œãƒ•ãƒ¬ãƒ¼ãƒŸãƒ³ã‚°ã®å®Ÿè£… (`DataReceive` ã‚¤ãƒ™ãƒ³ãƒˆå†…)
+2. **T2-01**: ã‚µãƒ¼ãƒãƒ¼ã®å¾…æ©Ÿé–‹å§‹å‡¦ç†ã®å®Ÿè£…
 
 ---
 
-### ? T1: sƒtƒŒ[ƒ~ƒ“ƒOi0%j
+## å±¥æ­´
 
-**ó‘Ô**
-- `Baccarat.Shared.Protocol` ‚É `Framer.vb` / `Parser.vb` / `Message.vb` ‚ª‘¶Ýiƒtƒ@ƒCƒ‹–¼‚©‚ç„‘ªj
-- ‚½‚¾‚µŽÀ‘•‚ÌÚ×•s–¾iƒR[ƒh“à—e‚ðŠm”F‚µ‚Ä‚¢‚È‚¢j
-- DataReceive ‚Ìsƒoƒbƒtƒ@ƒŠƒ“ƒOˆ—‚ÍŒ©“–‚½‚ç‚È‚¢i`TODO` ó‘Ôj
-
-**ŽŸ‚ÌƒAƒNƒVƒ‡ƒ“**
-1. `Framer.vb` / `Parser.vb` ‚Ì“à—e‚ðŠm”F
-2. sƒtƒŒ[ƒ~ƒ“ƒO‘w‚ÌŽÀ‘•i`\n` ‚Å•ªŠ„Aƒoƒbƒtƒ@ƒŠƒ“ƒOj
-
----
-
-### ? T2: Ú‘±EHELLO/WELCOMEi0%j
-
-**Œ»ó**
-- `ServerHost.vb` ‚É `HandleHello()` / `HandleReady()` / `HandleBet()` ‚Í skeleton ‚ ‚è
-- ‚½‚¾‚µ‘S‚Ä `TODO` ƒRƒƒ“ƒgó‘Ô
-
-**ŽÀ‘•‚·‚×‚«ˆ—**
-- OpenAsServer / OpenAsClient ‚ÌƒCƒxƒ“ƒgˆ—iAccept, Connect, Disconnectj
-- HELLO ŽóM ¨ nickname ŒŸØ ¨ playerId Š„“– ¨ WELCOME ‘—M
-- ƒƒOo—Í
-
-**ŽŸ‚ÌƒAƒNƒVƒ‡ƒ“FT2-01iƒT[ƒo‘Ò‹@‚ÆƒƒOj‚©‚ç’…Žè**
-
----
-
-### ? T3: READYEPhase§Œäi0%j
-
-**Œ»ó**
-- `GameState.vb` ‚Ì’è‹`‚Í–¢Šm”FiƒR[ƒhŒ©‚Ä‚¢‚È‚¢j
-- Phase ŠÇ—‚ªƒT[ƒo‚É–³‚¢i‘z‘œj
-
-**ŽÀ‘•‚·‚×‚«ˆ—**
-- Phase enum / state ‚ð ServerHost ‚ÉŽ‚½‚¹‚é
-- READY ‚ð 2l•ªŽó‚¯Žæ‚Á‚Ä BETTING ‚Ö‘JˆÚ
-- PHASE ƒƒbƒZ[ƒW‚Å—¼ƒNƒ‰ƒCƒAƒ“ƒg‚É’Ê’m
-
----
-
-### ? T4: BETE”zŽDEŒ‹‰Êi10%j
-
-**Œ»ó**
-- `BetInfo.vb`FŠ®‘S‚É’è‹`ÏiTarget/Amount/Lockedj
-- `BaccaratRulesPlaceholder.vb`FComputeScore / DealInitial / DetermineWinner ‚È‚Ç‚Ì skeleton ‚ ‚èi”z“–‚È‚µj
-- `PayoutCalculatorPlaceholder.vb`F‘¶Ýi“à—e–¢Šm”Fj
-- `Card.vb` / `Hand.vb`F‘¶Ýi“à—e–¢Šm”Fj
-
-**ŽÀ‘•‚·‚×‚«ˆ—**
-- BET Žó•tE•ÛŽEŒŸØ
-- —¼ŽÒŠm’è‚ðŒŸ’m‚µ‚Ä DEALING ‚Ö
-- ”zŽDiplaceholder ‚Åƒ‰ƒ“ƒ_ƒ€j
-- Ÿ”s”»’è
-- ROUND_RESULT ‘—M
-
----
-
-### ? T5: UI—vŒi0%j
-
-**Œ»ó**
-- `FormServer.vb` / `FormLobby.vb` / `FormGame.vb` / `FormRules.vb`F‘S‚Ä‘¶Ýiskeletonj
-- ƒrƒ‹ƒho—Í‚É resources ‚ª‚ ‚é‚Ì‚ÅAƒfƒUƒCƒi‚Í¶¬‚³‚ê‚Ä‚¢‚éiƒRƒ“ƒgƒ[ƒ‹”z’u‚ÌÚ×–¢Šm”Fj
-
-**ŽÀ‘•‚·‚×‚«ˆ—**
-- TcpSocket ƒRƒ“ƒ|[ƒlƒ“ƒg“\‚è•t‚¯ + SynchronizingObject Ý’è
-- ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰iAccept/Connect/DataReceive ‚È‚Çj
-- Phase ‚É‰ž‚¶‚½ƒRƒ“ƒgƒ[ƒ‹ Enabled Ø‚è‘Ö‚¦iApplyPhasej
-- ƒƒO’Ç‹Lˆ—
-
----
-
-### ? T6: ˆÙíŒni0%j
-
-**ó‘Ô**
-- •s³“ü—ÍŒŸoAØ’fˆ—‚È‚Ç–¢ŽÀ‘•
-
----
-
-### ? ƒhƒLƒ…ƒƒ“ƒgi100%j
-
-| ƒtƒ@ƒCƒ‹ | ó‘Ô |
-|---|---|
-| `README.md` | ? ‹¤“¯ŠJ”­ŽÒŒü‚¯ƒKƒCƒh + UI ‘€ìŽè‡ |
-| `TASKS.md` | ? ƒ^ƒXƒN•\i—Dæ“xEŠ®—¹ðŒ•t‚«j |
-| `docs/CONTEXT.md` | ? —vŒ’è‹`‘i‘S—vŒj |
-| `.gitignore` | ? VB/.NET •W€ |
-
----
-
-## —DæŽÀ‘•‡iÅ’ZƒQ[ƒ€¬—§j
-
-### ƒtƒF[ƒY 1: ’ÊMÅ¬‘a’Êi1-2 “új
-1. **T1-01**: sƒtƒŒ[ƒ~ƒ“ƒOŽÀ‘•iDataReceive ¨ ƒoƒbƒtƒ@ ¨ `\n` ‚Å•ªŠ„j
-2. **T2-01 / T2-02**: ƒT[ƒo/ƒNƒ‰ƒCƒAƒ“ƒg‘Ò‹@EÚ‘±EƒƒO
-   - **Žó“ü**: TC-001 ‘O”¼iÚ‘±‚ªƒƒO‚Éo‚éj
-
-### ƒtƒF[ƒY 2: HELLO/WELCOMEi1 “új
-3. **T2-03 / T2-04 / T2-05**: HELLO ‘—ŽóMEŒŸØEWELCOME •Ô‹p
-   - **Žó“ü**: TC-001 Œã”¼i‰Šú‰»Š®—¹j
-
-### ƒtƒF[ƒY 3: PhaseEREADYEBETi2 “új
-4. **T3-01 / T3-02 / T3-03**: Phase ŠÇ—EREADYEPHASE ’Ê’m
-5. **T4-01**: BET Žó•tE•ÛŽ
-6. **T4-02 / T4-03**: ”zŽDE”»’èEŒ‹‰Ê‘—M
-   - **Žó“ü**: TC-004iBETTING §–ñjETC-001 ‘S‘Ìi1ƒ‰ƒEƒ“ƒh¬—§j
-
-### ƒtƒF[ƒY 4: UIEŽó“üƒeƒXƒgi1 “új
-7. **T5-01 / T5-03 / T5-06**: Phase UI §Œä
-8. **T5-07**: ƒ‹[ƒ‹ƒEƒBƒ“ƒhƒE
-   - **Žó“ü**: TC-005iíŽžŽQÆ‰Â”\j
-
----
-
-## ŽŸ‚ÌˆêŽèi„§j
-
-### ‘¦Ài¡Tj
-1. **T0-01 ‰ðŒˆ**FDLL ŒÅ’è‰»i`lib/` ”z‰º‚É Experiment.TcpSocket.dll ‚ð’u‚­j
-2. **T1-01 ’…Žè**FsƒtƒŒ[ƒ~ƒ“ƒOŽÀ‘•iFramer ‚ÌŠm”FEŽÀ‘•j
-
-### 1 TŠÔˆÈ“à
-- T2-01 / T2-02FƒT[ƒoEƒNƒ‰ƒCƒAƒ“ƒgÚ‘±ˆ—
-- Žó“üƒeƒXƒg TC-001 ‘O”¼‚ð’Ê‚·
-
----
-
-## ƒŠƒXƒNE’ˆÓ
-
-| ƒŠƒXƒN | ‘Îô |
-|---|---|
-| DLL ŽQÆ‚ªŠÂ‹«ˆË‘¶ | ‘Šú‚É T0-01 ‰ðŒˆ |
-| sƒtƒŒ[ƒ~ƒ“ƒO‚ª–³‚¢‚Æ’ÊM‚ª“®‚©‚È‚¢ | T1-01 —Dæ“x‚ðÅ‚‚É‚·‚é |
-| UI ƒCƒxƒ“ƒgˆ—‚ª SynchronizingObject –¢Ý’è‚¾‚Æ Cross-thread ƒGƒ‰[ | UI ŽÀ‘•Žž‚É•K‚¸Šm”F |
-
----
-
-## Ž¿–âEŠm”FŽ–€
-
-- `Framer.vb` / `Parser.vb` ‚ÌŽÀ‘•ó‹µiƒtƒ@ƒCƒ‹‚Ì“à—e‚ðŠm”F‚µ‚½‚¢j
-- `Experiment.TcpSocket.dll` ‚ªŽÀsƒtƒHƒ‹ƒ_‚Éo—Í‚³‚ê‚Ä‚¢‚é‚©Šm”F‚µ‚½‚¢
+### 2026-01-06
+- **ç’°å¢ƒæ•´å‚™**:
+  - `src/` ãƒ•ã‚©ãƒ«ãƒ€æ§‹æˆã‚’å»ƒæ­¢ã—ã€ãƒ«ãƒ¼ãƒˆç›´ä¸‹ã«ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’é…ç½®ã™ã‚‹å½¢ã¸å¤‰æ›´ã€‚
+  - `Baccarat.sln` ã¨å„ `.vbproj` ã®ãƒ‘ã‚¹æ•´åˆæ€§ã‚’ä¿®æ­£ã€‚
+  - ä¸è¦ãª `app/` ãƒ•ã‚©ãƒ«ãƒ€ç­‰ã‚’å‰Šé™¤ã€‚
+- **ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆ**: `TASKS.md` ã‚’ UTF-8 ã§å†ä½œæˆã—ã€T0 ã‚¿ã‚¹ã‚¯ã‚’å®Œäº†æ‰±ã„ã«æ›´æ–°ã€‚

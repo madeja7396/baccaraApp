@@ -1,94 +1,84 @@
-# Baccarat ƒvƒƒWƒFƒNƒg ƒ^ƒXƒN•\iv1.1 —vŒ‘Î‰j
+# Baccarat ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ ã‚¿ã‚¹ã‚¯ä¸€è¦§ (v1.1 å®Ÿè£…å¯¾å¿œ)
 
-> ƒXƒR[ƒv: `Baccarat.Client` / `Baccarat.Server` / `Baccarat.Shared`
+> Scope: `Baccarat.Client` / `Baccarat.Server` / `Baccarat.Shared`
 > 
-> –Ú“I: —vŒ’è‹`‘i`docs/CONTEXT.md` v1.1j‚Æ‚Ì·•ª‚ğ–„‚ßATC-001?TC-005 ‚ğ–‚½‚·Å’ZŒo˜H‚ÅÀ‘•‚ği‚ß‚éB
+> ç›®çš„: è¦ä»¶å®šç¾©æ›¸ (v1.1) ã«åŸºã¥ãã€TC-001ï½TC-005 ã‚’æº€ãŸã™å®Ÿè£…ã‚’è¡Œã†ã€‚
 
 ---
 
-## —Dæ“xƒ‹[ƒ‹
-- **P0**: ‚±‚ê‚ª–³‚¢‚Æƒfƒ‚/‘a’Ê‚ª¬—§‚µ‚È‚¢iÅ—Dæj
-- **P1**: å—v‹@”\iƒQ[ƒ€¬—§j
-- **P2**: dã‚°iˆÙíŒn/UX/ƒhƒLƒ…ƒƒ“ƒgj
+## å„ªå…ˆåº¦å®šç¾©
+- **P0**: ã“ã‚ŒãŒãªã„ã¨ãƒ‡ãƒ¢/å¯¾æˆ¦ãŒæˆç«‹ã—ãªã„ (æœ€å„ªå…ˆ)
+- **P1**: è¦ä»¶å¿…é ˆæ©Ÿèƒ½ (ã‚²ãƒ¼ãƒ ã¨ã—ã¦æˆç«‹)
+- **P2**: ä»•ä¸Šã’ (ä¾‹å¤–å‡¦ç†ã€UXå‘ä¸Š)
 
 ---
 
-## 0. Šî”Õ®”õi‰ó‚ê‚É‚­‚³Å—Dæj
-| ID | —Dæ | ƒ^ƒXƒN | ‘ÎÛ | Š®—¹ğŒ |
+## 0. ç’°å¢ƒæ§‹ç¯‰ (P0 - å®Œäº†)
+| ID | å„ªå…ˆåº¦ | ã‚¿ã‚¹ã‚¯ | å¯¾è±¡ | å‚™è€ƒ |
 |---|---:|---|---|---|
-| T0-01 | P0 | `Experiment.TcpSocket.dll` ‚ÌQÆƒpƒX‚ğŒÅ’è‰»i`lib/` “™‚É”z’u‚µ Client/Server ‚Å“ˆêj | `Baccarat.Client.vbproj` / `Baccarat.Server.vbproj` | ƒNƒŠ[ƒ“ŠÂ‹«‚Å‚àQÆØ‚ê‚È‚µ |
-| T0-02 | P0 | DLL“¯«iCopy Local / Private=Truej‚ğŠm”F | Client/Server QÆ | `bin/Debug...` ‚É DLL ‚ªo—Í‚³‚ê‚é |
-| T0-03 | P0 | `Baccarat.Server` ‚Ì `MainForm` w’è‚Æ `RootNamespace` ‚Ì“ñd‚ğ‰ğÁ | `Baccarat.Server.vbproj` / `My Project/Application.myapp` / ©“®¶¬ | `MainForm` ‚ª“ñd–¼‚Å‚È‚­ 1 –{‚É“ˆê |
+| T0-01 | P0 | `Experiment.TcpSocket.dll` ã®å‚ç…§ãƒ‘ã‚¹ã‚’ `lib/` åŸºæº–ã«çµ±ä¸€ | Client/Server | **å®Œäº†** (ãƒ«ãƒ¼ãƒˆç›´ä¸‹æ§‹æˆã«å¤‰æ›´æ¸ˆ) |
+| T0-02 | P0 | DLLå‚ç…§ã®ã€Œãƒ­ãƒ¼ã‚«ãƒ«ã«ã‚³ãƒ”ãƒ¼(Copy Local)ã€ã‚’Trueã«è¨­å®š | Client/Server | **å®Œäº†** |
+| T0-03 | P0 | `Baccarat.Server` ã® `RootNamespace` ã‚’é©åˆ‡ã«è¨­å®š | Server | **å®Œäº†** |
 
 ---
 
-## 1. sƒtƒŒ[ƒ~ƒ“ƒOiPR-003j
-| ID | —Dæ | ƒ^ƒXƒN | ‘ÎÛ | Š®—¹ğŒ |
+## 1. é€šä¿¡ãƒ•ãƒ¬ãƒ¼ãƒŸãƒ³ã‚° (PR-003)
+| ID | å„ªå…ˆåº¦ | ã‚¿ã‚¹ã‚¯ | å¯¾è±¡ | å‚™è€ƒ |
 |---|---:|---|---|---|
-| T1-01 | P0 | DataReceive ‚Ì **sƒtƒŒ[ƒ~ƒ“ƒO**i•ªŠ„/Œ‹‡óM‘Î‰j | Client/Server óMˆ— | 1s’PˆÊ‚Å `Parser.TryParse` ‚É“n‚¹‚é |
-| T1-02 | P0 | ‘—MƒƒbƒZ[ƒW––”ö‚É `\n` “ˆê | Client/Server ‘—Mˆ— | `CMD,...\n` ‚Å‘—M‚³‚ê‚é |
-| T1-03 | P1 | ƒp[ƒX¸”s/–¢’mƒRƒ}ƒ“ƒh‚Ì `ERROR` ‰“š•ûj‚ğÀ‘• | Server | `ERROR,reason` ‚ª•Ô‚é |
+| T1-01 | P0 | DataReceive ã§ã®è¡Œãƒ•ãƒ¬ãƒ¼ãƒŸãƒ³ã‚°å®Ÿè£… | Client/Server | `Framer.vb` ã®çµåˆ |
+| T1-02 | P0 | é€ä¿¡ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã¸ã® `\n` ä»˜ä¸ | Client/Server | `Parser` åˆ©ç”¨ |
+| T1-03 | P1 | ãƒ‘ãƒ¼ã‚¹ã‚¨ãƒ©ãƒ¼æ™‚ã® `ERROR` è¿”ä¿¡ | Server | |
 
 ---
 
-## 2. Ú‘±EHELLO/WELCOMEiTC-001 ‘O”¼ / F-001?F-005j
-| ID | —Dæ | ƒ^ƒXƒN | ‘ÎÛ | Š®—¹ğŒ |
+## 2. æ¥ç¶šãƒ»HELLO/WELCOME (TC-001 / F-001ï½005)
+| ID | å„ªå…ˆåº¦ | ã‚¿ã‚¹ã‚¯ | å¯¾è±¡ | å‚™è€ƒ |
 |---|---:|---|---|---|
-| T2-01 | P0 | ƒT[ƒo‘Ò‹@ŠJniOpenAsServerj‚Æ Accept/Disconnect ‚ÌƒƒO‰» | `FormServer`/TcpSocket | Ú‘±ƒCƒxƒ“ƒg‚ªƒƒO‚Éo‚é |
-| T2-02 | P0 | ƒNƒ‰ƒCƒAƒ“ƒgÚ‘±iOpenAsClientj‚Æ Connect/Disconnect ‚ÌƒƒO‰» | `FormLobby`/TcpSocket | Ú‘±ƒCƒxƒ“ƒg‚ªƒƒO‚Éo‚é |
-| T2-03 | P0 | ƒNƒ‰ƒCƒAƒ“ƒg: Ú‘±Œã HELLO,nickname ‘—M | `FormLobby` | ƒT[ƒo‚ªHELLOóM |
-| T2-04 | P0 | ƒT[ƒo: nicknameŒŸØi‹ó/’·‚·‚¬j¨ `ERROR,INVALID_NAME` | `ServerHost.HandleHello` | •s³–¼‚ª‹‘”Û‚³‚ê‚é |
-| T2-05 | P0 | ƒT[ƒo: playerIdŠ„“–A`WELCOME` •ÔMiseed/maxRounds/initChipsj | `ServerHost` | Client‚ªWELCOME‚ğ‰ğß‚µó‘ÔXV |
+| T2-01 | P0 | Server: OpenAsServer / Accept / Disconnect ãƒ­ã‚° | Server | TCPã‚¤ãƒ™ãƒ³ãƒˆå®Ÿè£… |
+| T2-02 | P0 | Client: OpenAsClient / Connect / Disconnect ãƒ­ã‚° | Client | TCPã‚¤ãƒ™ãƒ³ãƒˆå®Ÿè£… |
+| T2-03 | P0 | Client: HELLO,nickname é€ä¿¡ | Client | æ¥ç¶šå®Œäº†æ™‚ |
+| T2-04 | P0 | Server: nicknameæ¤œè¨¼ / ERRORå¿œç­” | Server | |
+| T2-05 | P0 | Server: WELCOME,playerId é€ä¿¡ | Server | åˆæœŸåŒ–ãƒ‡ãƒ¼ã‚¿å«ã‚€ |
 
 ---
 
-## 3. READY ‚Æ Phase §ŒäiTC-001 ’†”Õ / F-006?F-008j
-| ID | —Dæ | ƒ^ƒXƒN | ‘ÎÛ | Š®—¹ğŒ |
+## 3. READYãƒ»Phaseç®¡ç† (TC-001 / F-006ï½008)
+| ID | å„ªå…ˆåº¦ | ã‚¿ã‚¹ã‚¯ | å¯¾è±¡ | å‚™è€ƒ |
 |---|---:|---|---|---|
-| T3-01 | P0 | READY ‚ğ 2l•ªó—‚µ‚ÄŠJn | `ServerHost.HandleReady` | 2l‘µ‚¤‚Ü‚ÅŠJn‚µ‚È‚¢ |
-| T3-02 | P0 | Phase ŠÇ—iLOBBY¨BETTING¨DEALING¨RESULT¨GAMEOVERj | `ServerHost`/`GameState` | ƒT[ƒoŒ ˆĞ‚ÅPhase‚ªi‚Ş |
-| T3-03 | P0 | Phase‘JˆÚ‚²‚Æ‚É `PHASE,phase,round` ‚ğ‘Sˆõ‚Ö‘—M | `ServerHost` | ƒNƒ‰ƒCƒAƒ“ƒgUI‚ªPhase”½‰f |
-| T3-04 | P0 | BETTINGˆÈŠO‚ÌBET‹‘”ÛiBET_ACK/ERRORj | `ServerHost.HandleBet` | •s³‘€ì‚ª’Ê‚ç‚È‚¢ |
+| T3-01 | P0 | READY å—ä¿¡ã¨2äººå¾…æ©Ÿ | Server | å…¨å“¡READYã§é–‹å§‹ |
+| T3-02 | P0 | Phaseç®¡ç† (LOBBY->BETTING...) | Server | GameStateã§ç®¡ç† |
+| T3-03 | P0 | PHASE,phase,round é€ä¿¡ | Server | çŠ¶æ…‹å¤‰åŒ–é€šçŸ¥ |
+| T3-04 | P0 | Phaseå¤–ã®BETæ‹’å¦ | Server | ä¸æ­£æ“ä½œé˜²æ­¢ |
 
 ---
 
-## 4. BET/”zD/Œ‹‰ÊiTC-001 Œã”¼ / F-009?F-011j
-| ID | —Dæ | ƒ^ƒXƒN | ‘ÎÛ | Š®—¹ğŒ |
+## 4. BETãƒ»åˆ¤å®šãƒ»é…å½“ (F-009ï½011)
+| ID | å„ªå…ˆåº¦ | ã‚¿ã‚¹ã‚¯ | å¯¾è±¡ | å‚™è€ƒ |
 |---|---:|---|---|---|
-| T4-01 | P0 | BET ó•tE•Ûi`BetInfo` lockedj | `GameState`/Server | —¼ÒŠm’è‚ğŒŸ’m |
-| T4-02 | P0 | Shoe¶¬A‰Šú”zDiplaceholder‚Å‰Âj | Shared Rules/Model | DEAL‰Â”\ |
-| T4-03 | P0 | Ÿ”s”»’èiWinnerj‚Æ `ROUND_RESULT` ‘—M | Server/Client | Œ‹‰Ê‚ª•\¦‚³‚ê‚é |
-| T4-04 | P0 | ”z“–ŒvZi`IPayoutCalculator` placeholderj‚Æ chips XV | Server | chips‚ªXV‚³‚ê‚é |
-| T4-05 | P1 | GAME_OVER ğŒiMaxRounds “™j‚Æ’Ê’m | Server | `GAME_OVER` ‚ª“Í‚­ |
+| T4-01 | P0 | BET å—ä¿¡ã¨ç¢ºå®š(Lock) | Server | |
+| T4-02 | P0 | é…æœ­ (DEAL) ã¨å‹æ•—åˆ¤å®š | Server | ãƒ—ãƒ¬ãƒ¼ã‚¹ãƒ›ãƒ«ãƒ€å¯ |
+| T4-03 | P0 | ROUND_RESULT é€ä¿¡ | Server | çµæœé€šçŸ¥ |
+| T4-04 | P0 | ãƒãƒƒãƒ—è¨ˆç®—ã¨æ›´æ–°é€šçŸ¥ | Server | |
+| T4-05 | P1 | GAME_OVER åˆ¤å®š | Server | |
 
 ---
 
-## 5. UI—vŒiUI-001?UI-107 / ƒ‹[ƒ‹ƒEƒBƒ“ƒhƒEj
-| ID | —Dæ | ƒ^ƒXƒN | ‘ÎÛ | Š®—¹ğŒ |
+## 5. UIå®Ÿè£… (UI-001ï½)
+| ID | å„ªå…ˆåº¦ | ã‚¿ã‚¹ã‚¯ | å¯¾è±¡ | å‚™è€ƒ |
 |---|---:|---|---|---|
-| T5-01 | P0 | Lobby: nickname‹ó‚È‚çÚ‘±•s‰Â | `FormLobby` | UI-001 |
-| T5-02 | P1 | Lobby: IPŒ`®ƒ`ƒFƒbƒN | `FormLobby` | UI-002 |
-| T5-03 | P0 | Game: Phase‚É‰‚¶‚Ä“ü—Í§Œä | `FormGame` | UI-101 |
-| T5-04 | P0 | Game: betŠz Min/Max §Œä | `FormGame` | UI-102/103 |
-| T5-05 | P0 | Game: betŠm’èŒã•ÏX•s‰Â | `FormGame` | UI-104 |
-| T5-06 | P0 | Game: RESULT ‚Ì‚İ Next —LŒø | `FormGame` | UI-105 |
-| T5-07 | P0 | Rules: ”ñƒ‚[ƒ_ƒ‹E’PˆêƒCƒ“ƒXƒ^ƒ“ƒX | `FormRules` | UI-201/202 |
-| T5-08 | P1 | Rules: uŠî–{/”z“–(—\’è)/‘€ìv•\¦ | `FormRules` | UI-203 |
+| T5-01 | P0 | Lobby: ãƒ‹ãƒƒã‚¯ãƒãƒ¼ãƒ å¿…é ˆåˆ¶å¾¡ | Client | |
+| T5-02 | P1 | Lobby: IPå½¢å¼ãƒã‚§ãƒƒã‚¯ | Client | |
+| T5-03 | P0 | Game: Phaseã«ã‚ˆã‚‹å…¥åŠ›åˆ¶å¾¡ | Client | `ApplyPhase` |
+| T5-04 | P0 | Game: ãƒ™ãƒƒãƒˆé¡ Min/Max/æ‰€æŒé‡‘åˆ¶å¾¡ | Client | |
+| T5-05 | P0 | Game: ãƒ™ãƒƒãƒˆç¢ºå®šå¾Œã®å¤‰æ›´ä¸å¯ | Client | |
+| T5-06 | P0 | Game: Resultæ™‚ã®Nextãƒœã‚¿ãƒ³åˆ¶å¾¡ | Client | |
+| T5-07 | P0 | Rules: ãƒ«ãƒ¼ãƒ«ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦è¡¨ç¤º | Client | éãƒ¢ãƒ¼ãƒ€ãƒ« |
 
 ---
 
-## 6. ˆÙíŒnEŒ˜˜S‰»iNF/PR/F-015j
-| ID | —Dæ | ƒ^ƒXƒN | ‘ÎÛ | Š®—¹ğŒ |
+## 6. ãã®ä»– (ç•°å¸¸ç³»)
+| ID | å„ªå…ˆåº¦ | ã‚¿ã‚¹ã‚¯ | å¯¾è±¡ | å‚™è€ƒ |
 |---|---:|---|---|---|
-| T6-01 | P0 | –¢’mƒRƒ}ƒ“ƒh/ƒpƒ‰•s‘«/Œ^•s³¨ERROR | Server | PR-004 |
-| T6-02 | P1 | 3l–ÚÚ‘±‹‘”ÛiROOM_FULLj | Server | F-002 |
-| T6-03 | P1 | Ø’fŒŸ’m¨‘Šè’Ê’m¨ˆÀ‘S’â~ | Server/Client | F-015 |
-| T6-04 | P2 | ƒƒOŒ`®“ˆêi/•ûŒü/“à—ej | Shared Logger | NF-003 |
-
----
-
-## ó“üƒeƒXƒgiƒ`ƒFƒbƒN‡j
-- **TC-001** Ú‘±/ƒnƒ“ƒhƒVƒFƒCƒNiHELLO/WELCOME/PHASEj
-- **TC-003** sƒtƒŒ[ƒ~ƒ“ƒOi•ªŠ„/Œ‹‡óM‘Ï«j
-- **TC-004** Phase§–ñiBETTINGˆÈŠO‚ÌBET‹‘”Ûj
-- **TC-005** ƒ‹[ƒ‹ƒEƒBƒ“ƒhƒEíQÆ
+| T6-01 | P0 | ä¸æ­£ã‚³ãƒãƒ³ãƒ‰å¯¾å¿œ | Server | |
+| T6-02 | P1 | 3äººç›®æ¥ç¶šæ‹’å¦ (ROOM_FULL) | Server | |
+| T6-03 | P1 | åˆ‡æ–­æ™‚ã®å¯¾æˆ¦ä¸­æ–­å‡¦ç† | Server/Client | |
