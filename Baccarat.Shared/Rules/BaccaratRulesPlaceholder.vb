@@ -1,7 +1,7 @@
 Imports System
 Imports System.Collections.Generic
-Imports Model
-Imports Protocol
+Imports Baccarat.Shared.Model
+Imports Baccarat.Shared.Protocol
 Imports System.Linq
 
 Namespace Rules

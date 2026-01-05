@@ -1,4 +1,4 @@
-Imports Protocol
+Imports Baccarat.Shared.Protocol
 
 Namespace Model
     Public Class BetInfo

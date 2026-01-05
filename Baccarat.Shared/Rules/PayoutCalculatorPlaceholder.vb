@@ -1,4 +1,4 @@
-Imports Protocol
+Imports Baccarat.Shared.Protocol
 
 Namespace Rules
     ' シンプルな配当計算（プレースホルダ）

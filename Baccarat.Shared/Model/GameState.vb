@@ -1,5 +1,5 @@
 Imports System.Collections.Generic
-Imports Protocol
+Imports Baccarat.Shared.Protocol
 
 Namespace Model
     ''' <summary>

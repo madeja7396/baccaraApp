@@ -1,5 +1,5 @@
 Imports System.Text.RegularExpressions
-Imports Model
+Imports Baccarat.Shared.Model
 
 Namespace Util
     Public Module Validate

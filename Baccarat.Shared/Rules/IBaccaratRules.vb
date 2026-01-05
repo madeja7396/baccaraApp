@@ -1,5 +1,5 @@
-Imports Model
-Imports Protocol
+Imports Baccarat.Shared.Model
+Imports Baccarat.Shared.Protocol
 
 Namespace Rules
     Public Interface IBaccaratRules

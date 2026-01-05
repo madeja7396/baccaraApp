@@ -21,6 +21,14 @@ D:\dev\Baccarat\Baccarat.Client\obj\Debug\net10.0-windows\refint\Baccarat.Client
 D:\dev\Baccarat\Baccarat.Client\obj\Debug\net10.0-windows\Baccarat.Client.pdb
 D:\dev\Baccarat\Baccarat.Client\obj\Debug\net10.0-windows\Baccarat.Client.genruntimeconfig.cache
 D:\dev\Baccarat\Baccarat.Client\obj\Debug\net10.0-windows\ref\Baccarat.Client.dll
+D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\bin\Debug\net10.0-windows\Baccarat.Client.exe
+D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\bin\Debug\net10.0-windows\Baccarat.Client.deps.json
+D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\bin\Debug\net10.0-windows\Baccarat.Client.runtimeconfig.json
+D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\bin\Debug\net10.0-windows\Baccarat.Client.dll
+D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\bin\Debug\net10.0-windows\Baccarat.Client.pdb
+D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\bin\Debug\net10.0-windows\Baccarat.Shared.dll
+D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\bin\Debug\net10.0-windows\Experiment.TcpSocket.dll
+D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\bin\Debug\net10.0-windows\Baccarat.Shared.pdb
 D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\obj\Debug\net10.0-windows\Baccarat.Client.vbproj.AssemblyReference.cache
 D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\obj\Debug\net10.0-windows\Baccarat.Client.Forms.FormGame.resources
 D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\obj\Debug\net10.0-windows\Baccarat.Client.Forms.FormLobby.resources
@@ -31,3 +39,9 @@ D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\obj\Debug\net10.0-windows\Bacc
 D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\obj\Debug\net10.0-windows\Baccarat.Client.AssemblyInfo.vb
 D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\obj\Debug\net10.0-windows\Baccarat.Client.vbproj.CoreCompileInputs.cache
 D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\obj\Debug\net10.0-windows\Baccarat.Client.sourcelink.json
+D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\obj\Debug\net10.0-windows\Baccarat.4CD49D8C.Up2Date
+D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\obj\Debug\net10.0-windows\Baccarat.Client.dll
+D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\obj\Debug\net10.0-windows\refint\Baccarat.Client.dll
+D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\obj\Debug\net10.0-windows\Baccarat.Client.pdb
+D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\obj\Debug\net10.0-windows\Baccarat.Client.genruntimeconfig.cache
+D:\wsl\Ubuntu\gitclone\baccaraApp\Baccarat.Client\obj\Debug\net10.0-windows\ref\Baccarat.Client.dll

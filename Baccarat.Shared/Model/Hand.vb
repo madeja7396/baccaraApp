@@ -1,5 +1,5 @@
 Imports System.Collections.Generic
-Imports Rules
+Imports Baccarat.Shared.Rules
 
 Namespace Model
     Public Class Hand
