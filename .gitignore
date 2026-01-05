@@ -1,0 +1,31 @@
+# Visual Basic / WinForms build outputs
+bin/
+obj/
+.vs/
+**/bin/
+**/obj/
+
+# User / IDE artifacts
+*.user
+*.suo
+*.pdb
+*.log
+.vscode/
+.idea/
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+
+# NuGet / packages
+*.nupkg
+packages/
+
+# Local DLL copy (kept under lib/)
+/Experiment.TcpSocket.dll
+
+# Misc / temp
+*.bak
+*.tmp
+*.cache
+*.config.lock
+artifacts/

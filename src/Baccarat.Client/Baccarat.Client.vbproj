@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <OutputType>WinExe</OutputType>
+
+    <RootNamespace></RootNamespace>
+    <MyType>WindowsForms</MyType>
+    <ApplicationFramework>false</ApplicationFramework>
+
+    <AssemblyName>Baccarat.Client</AssemblyName>
+    <OptionStrict>On</OptionStrict>
+    <OptionInfer>On</OptionInfer>
+    <LangVersion>latest</LangVersion>
+    <StartupObject>Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Baccarat.Shared\Baccarat.Shared.vbproj" />
+    <Reference Include="Experiment.TcpSocket">
+      <HintPath>..\..\lib\Experiment.TcpSocket.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+</Project>
