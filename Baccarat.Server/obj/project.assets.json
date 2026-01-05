@@ -33,11 +33,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\dev\\Baccarat\\Baccarat.Server\\Baccarat.Server.vbproj",
+      "projectUniqueName": "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Server\\Baccarat.Server.vbproj",
       "projectName": "Baccarat.Server",
-      "projectPath": "D:\\dev\\Baccarat\\Baccarat.Server\\Baccarat.Server.vbproj",
+      "projectPath": "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Server\\Baccarat.Server.vbproj",
       "packagesPath": "C:\\Users\\h1ra1\\.nuget\\packages\\",
-      "outputPath": "D:\\dev\\Baccarat\\Baccarat.Server\\obj\\",
+      "outputPath": "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Server\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -59,8 +59,8 @@
         "net10.0-windows7.0": {
           "targetAlias": "net10.0-windows",
           "projectReferences": {
-            "D:\\dev\\Baccarat\\Baccarat.Shared\\Baccarat.Shared.vbproj": {
-              "projectPath": "D:\\dev\\Baccarat\\Baccarat.Shared\\Baccarat.Shared.vbproj"
+            "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Shared\\Baccarat.Shared.vbproj": {
+              "projectPath": "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Shared\\Baccarat.Shared.vbproj"
             }
           }
         }

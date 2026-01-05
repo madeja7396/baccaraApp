@@ -1,8 +1,7 @@
-Imports Baccarat.Server.Net
 Imports Baccarat.Shared.Rules
 Imports Baccarat.Shared.Util
 
-Namespace Baccarat.Server.Forms
+Namespace Forms
     ''' <summary>
     ''' サーバー用メインフォーム
     ''' </summary>
@@ -29,13 +28,15 @@ Namespace Baccarat.Server.Forms
     '''    - `TextBox` への追記は UIスレッドで行う必要があります (SynchronizingObject設定済みなら気にする必要はありません)。
     ''' </remarks>
     Public Class FormServer
-        Private _host As Baccarat.Server.Net.ServerHost
+        Inherits System.Windows.Forms.Form
+
+        Private _host As Net.ServerHost
 
         Public Sub New()
             ' Windows Forms デザイナ用
             InitializeComponent()
             Dim logger = New Logger(AddressOf AppendLog)
-            _host = New Baccarat.Server.Net.ServerHost(logger, New BaccaratRulesPlaceholder(), New PayoutCalculatorPlaceholder())
+            _host = New Net.ServerHost(logger, New BaccaratRulesPlaceholder(), New PayoutCalculatorPlaceholder())
         End Sub
 
         Private Sub FormServer_Load(sender As Object, e As EventArgs) Handles MyBase.Load

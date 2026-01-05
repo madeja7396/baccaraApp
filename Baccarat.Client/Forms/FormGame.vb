@@ -1,7 +1,7 @@
 Imports Baccarat.Shared.Protocol
 Imports Baccarat.Shared.Util
 
-Namespace Baccarat.Client.Forms
+Namespace Forms
     ''' <summary>
     ''' ゲーム画面（ベット・対戦表示）
     ''' </summary>
@@ -25,6 +25,8 @@ Namespace Baccarat.Client.Forms
     '''    - サーバーからの受信メッセージや内部状態を `txtLog` に出力するとデバッグが容易になります。
     ''' </remarks>
     Public Class FormGame
+        Inherits System.Windows.Forms.Form
+
         Private _logger As Logger
         Private _phase As GamePhase = GamePhase.LOBBY
 

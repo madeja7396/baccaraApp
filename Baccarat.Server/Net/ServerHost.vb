@@ -3,7 +3,7 @@ Imports Baccarat.Shared.Protocol
 Imports Baccarat.Shared.Rules
 Imports Baccarat.Shared.Util
 
-Namespace Baccarat.Server.Net
+Namespace Net
     ' Server-side coordinator (Experiment.TcpSocket を後で接続)
     Public Class ServerHost
         Private ReadOnly _logger As Logger

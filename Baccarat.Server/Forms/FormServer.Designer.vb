@@ -1,6 +1,6 @@
 Imports System.Windows.Forms
 
-Namespace Baccarat.Server.Forms
+Namespace Forms
     Partial Class FormServer
         Inherits Form
 

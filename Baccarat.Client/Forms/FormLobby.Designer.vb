@@ -1,6 +1,6 @@
 Imports System.Windows.Forms
 
-Namespace Baccarat.Client.Forms
+Namespace Forms
     Partial Class FormLobby
         Inherits Form
 

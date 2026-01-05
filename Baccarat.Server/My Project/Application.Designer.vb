@@ -28,7 +28,7 @@ Namespace My
 
         <Global.System.Diagnostics.DebuggerStepThroughAttribute()>
         Protected Overrides Sub OnCreateMainForm()
-            Me.MainForm = New Global.Baccarat.Server.Baccarat.Server.Forms.FormServer()
+            Me.MainForm = New Global.Baccarat.Server.Forms.FormServer()
         End Sub
     End Class
 End Namespace

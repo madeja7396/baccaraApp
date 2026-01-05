@@ -33,7 +33,7 @@ Namespace My
         
         <Global.System.Diagnostics.DebuggerStepThroughAttribute()>  _
         Protected Overrides Sub OnCreateMainForm()
-            Me.MainForm = Global.Baccarat.Client.Baccarat.Client.Forms.FormLobby
+            Me.MainForm = Global.Baccarat.Client.Forms.FormLobby
         End Sub
         
         <Global.System.Diagnostics.DebuggerStepThroughAttribute()>  _

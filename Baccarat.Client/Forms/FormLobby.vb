@@ -1,7 +1,7 @@
 Imports Baccarat.Shared.Protocol
 Imports Baccarat.Shared.Util
 
-Namespace Baccarat.Client.Forms
+Namespace Forms
     ''' <summary>
     ''' ロビー画面（接続・待機）
     ''' </summary>
@@ -26,6 +26,8 @@ Namespace Baccarat.Client.Forms
     '''    - `AppendLog` メソッドを経由して `txtLog` に追記してください。
     ''' </remarks>
     Public Class FormLobby
+        Inherits System.Windows.Forms.Form
+
         Private _logger As Logger
 
         Public Sub New()
