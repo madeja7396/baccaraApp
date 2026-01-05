@@ -14,10 +14,10 @@ Namespace Baccarat.Shared.Util
             Return Not String.IsNullOrWhiteSpace(ip) AndAlso IpPattern.IsMatch(ip)
         End Function
 
-        Public Function Bet(bet As Model.BetInfo, chips As Integer) As Boolean
-            If bet Is Nothing Then Return False
-            If bet.Amount <= 0 Then Return False
-            If bet.Amount > chips Then Return False
+        Public Function Bet(betInfo As Model.BetInfo, chips As Integer) As Boolean
+            If betInfo Is Nothing Then Return False
+            If betInfo.Amount <= 0 Then Return False
+            If betInfo.Amount > chips Then Return False
             Return True
         End Function
     End Module

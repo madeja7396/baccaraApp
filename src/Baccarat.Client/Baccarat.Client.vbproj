@@ -3,7 +3,7 @@
     <TargetFramework>net472</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Baccarat.Client</RootNamespace>
+    <RootNamespace></RootNamespace>
     <AssemblyName>Baccarat.Client</AssemblyName>
     <OptionStrict>On</OptionStrict>
     <OptionInfer>On</OptionInfer>
