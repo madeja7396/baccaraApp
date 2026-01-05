@@ -3,12 +3,14 @@
     <TargetFramework>net48</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <OutputType>WinExe</OutputType>
-    <RootNamespace></RootNamespace>
+
+    <RootNamespace>Baccarat.Client</RootNamespace>
+    <MyType>WindowsForms</MyType>
+
     <AssemblyName>Baccarat.Client</AssemblyName>
     <OptionStrict>On</OptionStrict>
     <OptionInfer>On</OptionInfer>
     <LangVersion>latest</LangVersion>
-    <StartupObject>Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Baccarat.Shared\Baccarat.Shared.vbproj" />
