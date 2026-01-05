@@ -18,7 +18,7 @@ Namespace Baccarat.Client.Forms
             ' TODO: validate IP/Nickname and OpenAsClient
         End Sub
 
-        Private Sub btnDisconnect_Click(sender As Object, e As EventArgs) Handles btnDisconnect.Click
+        Private Sub btnDisconnect_Click(sender As Object, e As EventArgs)
             ' TODO: close connection
         End Sub
 
