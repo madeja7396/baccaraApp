@@ -1,140 +1,112 @@
-# Baccarat�i�ΐ�^�o�J���j
+# Baccarat (対戦型バカラ)
 
-���̃��|�W�g���́AVB�iWindows Forms�j�ō�� **2�l�ΐ�̃o�J��** �ł��B  
-�T�[�o1�� + �N���C�A���g2��ŗV�ԑz��ł��B
+VB.NET (Windows Forms) で実装された、TCP通信による2人対戦型バカラアプリケーションです。
+サーバー権威型（Server Authority）でゲーム進行を管理し、2つのクライアントが接続して対戦します。
 
-- �ʐM: TCP�i`Experiment.TcpSocket` ���g�p�j
-- ���: Windows Forms
-- ����: **�T�[�o���Q�[���̐��i��ԁE���s�E�`�b�v�j���Ǘ�**���܂�
-
-> �d�l�̌�����: `docs/CONTEXT.md`
+> **最新ステータス**: v1.1 実装フェーズ (2026-01-06 更新)
 
 ---
 
-## �v���W�F�N�g�\��
+## プロジェクト構成
 
-- `Baccarat.Shared` ���L�R�[�h�i�v���g�R���A���f���A���[���A���O�j
-- `Baccarat.Server` �T�[�o�i�z�X�g�j
-- `Baccarat.Client` �N���C�A���g�i�v���C���[�j
+このソリューションは3つのプロジェクトで構成されています。
 
----
+- **Baccarat.Server**: ゲームサーバー。ゲーム進行 (Phase)、判定、チップ管理を行う権威サーバー。
+- **Baccarat.Client**: プレイヤー用クライアント。UI表示、ベット操作、サーバーへの通信を行う。
+- **Baccarat.Shared**: 共通ライブラリ。通信プロトコル、データモデル、ルール計算ロジック。
 
-## �܂���邱�Ɓi�����J���Ҍ����j
-
-### 1) �K�v��DLL
-���̃A�v���� `Experiment.TcpSocket.dll` ���Q�Ƃ��܂��B
-
-- ���Ƀv���W�F�N�g�Q�Ƃɓ����Ă��܂�
-- ���s�t�H���_�i`bin\Debug...`�j�� DLL ���R�s�[����Ȃ��ꍇ�́A�Q�Ɛݒ�� **Copy Local�i���[�J���ɃR�s�[�j** ���m�F���Ă�������
-
-> �� DLL �̒u���ꏊ�� `lib/` �Ȃǂɂ܂Ƃ߂鐮���͍���̃^�X�N�ł��i`TASKS.md` �Q�Ɓj
-
-### 2) �r���h
-Visual Studio �Ń\�����[�V�������J���A
-- **���r���h**�iRebuild�j
-
-�r���h���ʂ��OK�ł��B
-
-### 3) �N���i����j
-- `Baccarat.Server` ���N���i�T�[�o��ʁj
-- `Baccarat.Client` ��2�N���i�N���C�A���g��ʂ�2�l���j
-
-> ���܂́u�ʐM�E�Q�[���i�s�v�͒i�K�I�Ɏ������ł��B�i���� `TASKS.md` �����Ă��������B
-
----
-
-## �J���̐i�ߕ�
-
-- �d�l�� `docs/CONTEXT.md` ����ɂ��܂�
-- TODO/�v��� `TASKS.md` �ɂ܂Ƃ߂Ă��܂�
-
-### �u�����`�^�p�i�ȒP�Łj
-- 1�^�X�N = 1�u�����`�i��: `feature/framer`�j
-- �r���ł��������R�~�b�g
-- PR�i�܂��͍������r���[�j���Ă��� `main` �Ɏ�荞��
-
----
-
-## UI�i�t�H�[���j�̐G���
-
-### �ꏊ�Ɩ���
-- `Baccarat.Server/Forms/FormServer.vb` �T�[�o�� UI�i�ҋ@�A���O�\���j
-- `Baccarat.Client/Forms/FormLobby.vb` �N���C�A���g�ڑ���ʁiIP���́A�j�b�N�l�[���A�ڑ��{�^���j
-- `Baccarat.Client/Forms/FormGame.vb` �Q�[���i�s��ʁi�x�b�g�A���ʕ\���j
-- `Baccarat.Client/Forms/FormRules.vb` ���[���Q�ƃE�B���h�E�i�펞�\���\�j
-
-### �t�H�[���ҏW�̎菇
-1. **Visual Studio �Ńt�H�[�����J��**
-   - �\�����[�V���� �G�N�X�v���[���[ �� �Y���t�H�[���i��: `FormServer.vb`�j �� �_�u���N���b�N
-   - �f�U�C���r���[���J���܂�
-
-2. **�R���g���[���ǉ�**
-   - �c�[���{�b�N�X���� TextBox / Button / Label �Ȃǂ��A�t�H�[���Ƀh���b�O���Ĕz�u
-   - �v���p�e�B�E�B���h�E�iF4�j�� Name / Text �Ȃǂ�ݒ�
-
-3. **�����K��**
-   - TextBox: `txt...` �i��: `txtNickname`�j
-   - Button: `btn...` �i��: `btnConnect`�j
-   - Label: `lbl...` �i��: `lblStatus`�j
-   - GroupBox: `grp...` �i��: `grpBet`�j
-   - TabControl: `tab...` �i��: `tabRules`�j
-
-4. **�C�x���g�ڑ�**
-   - �{�^�����_�u���N���b�N �� `btnXxx_Click` �n���h�����������������
-   - ���̒��ɏ����������i��: �ڑ��{�^������������ `openAsClient(...)` ���Ăԁj
-
-### ���O�\���̗�i�R�[�h�j
-```visualbasic
-' TextBox �Ƀ��O��ǋL����iFormServer / FormLobby ���Ŏg�p�j
-Private Sub AppendLog(message As String)
-    txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] {message}" & vbCrLf)
-    ' �����ɃX�N���[��
-    txtLog.SelectionStart = txtLog.TextLength
-    txtLog.ScrollToCaret()
-End Sub
+### ディレクトリ構造
 ```
-
-### Phase �ɂ�� UI �̗L��/�����i��j
-```visualbasic
-' FormGame �� Phase �ɉ����ă{�^���𐧌�
-Private Sub ApplyPhase(phase As String)
-    Select Case phase
-        Case "BETTING"
-            grpBet.Enabled = True  ' �x�b�g���͂�L����
-            btnNext.Enabled = False
-        Case "RESULT"
-            grpBet.Enabled = False
-            btnNext.Enabled = True  ' ���փ{�^����L����
-        Case Else
-            grpBet.Enabled = False
-            btnNext.Enabled = False
-    End Select
-End Sub
-```
-
-### TcpSocket �̐ڑ��iFormServer ��j
-```visualbasic
-' FormServer.Designer.vb �� Load �ŁATcpSocket ��\��t���� SynchronizingObject ��ݒ�
-Private Sub FormServer_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-    ' TcpSocket �R���|�[�l���g�i�f�U�C�i�Œǉ��j
-    ' tcpSockets.SynchronizingObject = Me  �i�d�v: UI �X���b�h�ŃC�x���g���󂯂�j
-    
-    ' �T�[�o�ҋ@�J�n
-    tcpSockets.OpenAsServer(9000)  ' �|�[�g�ԍ��̓v���[�X�z���_
-    AppendLog("Server waiting...")
-End Sub
+.
+├── Baccarat.sln          # ソリューションファイル
+├── Baccarat.Server/      # サーバープロジェクト
+├── Baccarat.Client/      # クライアントプロジェクト
+├── Baccarat.Shared/      # 共通ライブラリ
+├── lib/                  # 外部DLL (Experiment.TcpSocket.dll)
+├── docs/                 # 詳細ドキュメント (要件、仕様)
+├── TASKS.md              # タスク一覧と優先度
+├── PROGRESS.md           # 進捗レポート
+└── README.md             # 本ファイル
 ```
 
 ---
 
-## �A���E����
+## 開発環境とセットアップ
 
-- UI �ƒʐM�͓����ɐG��Ɖ��₷���̂ŁA
-  �\�Ȃ�u�ʐM�^�X�N�v�uUI�^�X�N�v�𕪂��Đi�߂�̂��������߂ł��B
-- ��M�C�x���g�́A��M������/�������邱�Ƃ�����܂��B�܂� **�s�t���[�~���O** ��D��ō����j�ł��B
-- �t�H�[���ǉ��E�폜���́A`My Project/Application.myapp` �̐ݒ肪�Y���Ȃ����m�F���Ă��������B
+### 必須環境
+- **Visual Studio 2022** (または同等)
+- **.NET Framework** (ターゲット: 4.8 推奨)
+- **Windows Forms** 開発ワークロード
+
+### ビルド手順
+1. `Baccarat.sln` を Visual Studio で開く。
+2. ソリューション全体を **リビルド** する。
+3. `bin/Debug` フォルダに `Experiment.TcpSocket.dll` がコピーされていることを確認する。
+
+### 実行方法
+1. **サーバー**: `Baccarat.Server` をデバッグ実行 (または exe 起動)。待機状態にする。
+2. **クライアント**: `Baccarat.Client` を2つ起動。
+3. ロビー画面でニックネームを入力し、サーバーへ接続。
 
 ---
 
-## ���C�Z���X
-�K�v�Ȃ�L�ڂ��Ă��������B
+## 開発ガイドライン (共同開発者向け)
+
+### 1. UI実装のルール
+- 原則として **Visual Studio のフォームデザイナー** を使用してください。
+- **命名規則**:
+  - TextBox: `txt...` (例: `txtLog`, `txtNickname`)
+  - Button: `btn...` (例: `btnConnect`, `btnBet`)
+  - Label: `lbl...` (例: `lblStatus`, `lblPhase`)
+- **ログ出力**: 各フォームの `AppendLog` メソッドを経由して `txtLog` に出力してください。
+
+### 2. TCP通信 (`Experiment.TcpSocket`)
+- ツールボックスから `TcpSockets` コンポーネントをフォームに配置します。
+- プロパティ **`SynchronizingObject`** にフォーム自身 (`Me` / `FormServer`) を必ず設定してください。
+  - これにより、`DataReceive` などのイベントが UIスレッドで安全に実行されます。
+- 通信メッセージは `Shared.Protocol` のパーサーを利用し、行単位 (`\n`) で処理します。
+
+### 3. ゲーム進行 (Phase)
+- ゲーム状態は `Shared.Model.GamePhase` で定義されています (LOBBY, BETTING, DEALING, RESULT)。
+- クライアントはサーバーから送られる `PHASE` コマンドに従って画面制御 (`ApplyPhase` メソッド) を行います。勝手に状態を変更しないでください。
+
+---
+
+## ドキュメント
+
+- [**TASKS.md**](./TASKS.md): 実装タスク一覧と優先度 (P0/P1)。開発はこれに従って進めます。
+- [**PROGRESS.md**](./PROGRESS.md): 日々の進捗レポート。
+- [**docs/CONTEXT.md**](./docs/CONTEXT.md): 要件定義、仕様詳細、プロトコル定義。
+
+---
+
+## 🤝 チームで開発する皆さんへ（開発の進め方）
+
+このプロジェクトへようこそ！みんなで楽しく、スムーズに開発を進めるためのガイドです。
+
+### 1. まずは「何をするか」を確認しよう
+- [**TASKS.md**](./TASKS.md) を開いてみてください。
+- ここには、これから作る機能が「優先度（P0〜P2）」順に並んでいます。
+- 自分が担当したいタスクを見つけたら、メンバーに伝えて作業を開始しましょう！
+
+### 2. プロジェクトの「中身」をのぞいてみよう
+フォルダが3つに分かれていますが、役割はシンプルです。
+- **Shared（みんなの宝箱）**: 通信のルールや、カードのデータなど、サーバーとクライアントの両方で使う大切なものが入っています。
+- **Server（ゲームの審判）**: ゲームの進行や勝敗を決める「頭脳」です。
+- **Client（プレイヤーの窓口）**: 画面（フォーム）を作ったり、ボタンが押された時の動きを作ります。
+
+### 3. 作業のコツとお約束
+- **小さな一歩を大切に**: 大きな機能を作る時も、少し作ったら「コミット」して、こまめに保存しましょう。
+- **コメントは「未来の自分と仲間」への手紙**: 複雑な処理を書いた時は、「なぜこう書いたのか」を日本語で書き残しておくと、みんなが助かります。
+- **UIはデザイナーにおまかせ**: 画面の見た目は Visual Studio の「デザイナー画面」で直感的に作ってOKです。コードで画面を作るのは最小限にしましょう。
+
+### 4. 困ったときは……
+- 「ビルドが通らない！」「このエラーどうすればいい？」と思ったら、すぐに周りに相談してください。
+- `PROGRESS.md` に今の悩みを書いておくだけでも、誰かが気づいて助けてくれるかもしれません。
+- 完璧を目指さず、まずは「動くもの」を一緒に作っていきましょう！
+
+---
+
+## ライセンス / 権利
+- 本プロジェクトは教育/演習目的で作成されています。
+- 通信ライブラリ: `Experiment.TcpSocket.dll` (学内/プロジェクト配布物)
