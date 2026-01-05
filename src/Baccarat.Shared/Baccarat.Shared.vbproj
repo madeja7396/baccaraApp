@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <RootNamespace>Baccarat.Shared</RootNamespace>
+    <AssemblyName>Baccarat.Shared</AssemblyName>
+    <OptionStrict>On</OptionStrict>
+    <OptionInfer>On</OptionInfer>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+</Project>
