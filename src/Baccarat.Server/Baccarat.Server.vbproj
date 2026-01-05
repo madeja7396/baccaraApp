@@ -3,7 +3,7 @@
     <TargetFramework>net48</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Baccarat.Server</RootNamespace>
+    <RootNamespace></RootNamespace>
     <AssemblyName>Baccarat.Server</AssemblyName>
     <OptionStrict>On</OptionStrict>
     <OptionInfer>On</OptionInfer>
