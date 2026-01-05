@@ -4,13 +4,15 @@
     <UseWindowsForms>true</UseWindowsForms>
     <OutputType>WinExe</OutputType>
 
-    <RootNamespace>Baccarat.Client</RootNamespace>
+    <RootNamespace></RootNamespace>
     <MyType>WindowsForms</MyType>
+    <ApplicationFramework>false</ApplicationFramework>
 
     <AssemblyName>Baccarat.Client</AssemblyName>
     <OptionStrict>On</OptionStrict>
     <OptionInfer>On</OptionInfer>
     <LangVersion>latest</LangVersion>
+    <StartupObject>Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Baccarat.Shared\Baccarat.Shared.vbproj" />
