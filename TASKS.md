@@ -25,6 +25,7 @@
 ## 1. 通信フレーミング (PR-003)
 | ID | 優先度 | タスク | 対象 | 備考 |
 |---|---:|---|---|---|
+| T1-00 | P0 | DataReceiveEventArgs のプロパティ名確認 | Client/Server | **必須**: VSのIntelliSenseで `e.` を打ち、`Data` か `Buffer` かを確認し `docs/exprement.md` に反映する |
 | T1-01 | P0 | DataReceive での行フレーミング実装 | Client/Server | `Framer.vb` の結合 |
 | T1-02 | P0 | 送信メッセージへの `\n` 付与 | Client/Server | `Parser` 利用 |
 | T1-03 | P1 | パースエラー時の `ERROR` 返信 | Server | |

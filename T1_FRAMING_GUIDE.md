@@ -1,119 +1,137 @@
-# T1isƒtƒŒ[ƒ~ƒ“ƒOjÀ‘•ƒKƒCƒh
+# T1 ãƒ•ãƒ¬ãƒ¼ãƒŸãƒ³ã‚°å®Ÿè£…ã‚¬ã‚¤ãƒ‰
 
-> ó‘ÔFFramer ‚ÍŠ®¬Ï‚İBUI ‚Æ’ÊM‚ÌÚ‘±‚ª•K—vB
+> å‰æï¼šFramer ã¯å®Ÿè£…æ¸ˆã¿ã€‚UI ã¨é€šä¿¡ã®æ¥ç¶šãŒå¿…è¦ã€‚
 
-## Œ»ó
+## æ¦‚è¦
 
-### ? À‘•Ï
-- `Baccarat.Shared.Protocol.LineFramer`FŠ®¬
-  - `Push(chunk)` ‚Å TCP ƒf[ƒ^‚ğó‚¯æ‚é
-  - `\n` ‚²‚Æ‚És‚ğ’Šo
-  - `LineReceived` ƒCƒxƒ“ƒg‚ğ”­‰Î
+### 1. å½¹å‰²
+- `Baccarat.Shared.Protocol.LineFramer`ï¼šè¡Œåˆ†å‰²
+  - `Push(chunk)` ã§ TCP ãƒ‡ãƒ¼ã‚¿ã‚’å—ã‘å–ã‚‹
+  - `\n` ã”ã¨ã«è¡Œã‚’æŠ½å‡º
+  - `LineReceived` ã‚¤ãƒ™ãƒ³ãƒˆã‚’ç™ºç«
 
-### ? –¢À‘•
-- Server/Client ‚Ì UIiFormServer / FormLobbyj‚Å Framer ‚ğg‚¤
-- DataReceive ƒCƒxƒ“ƒg ¨ `Framer.Push()` ¨ ƒnƒ“ƒhƒ‰ ‚Ö‚Â‚È‚®
+### 2. å®Ÿè£…ç®‡æ‰€
+- Server/Client ã® UIï¼ˆFormServer / FormLobbyï¼‰ã§ Framer ã‚’ä½¿ã†
+- DataReceive ã‚¤ãƒ™ãƒ³ãƒˆ â†’ `Framer.Push()` â†’ ãƒãƒ³ãƒ‰ãƒ© ã¸ã¤ãªã
 
 ---
 
-## À‘•è‡iT1-01 / T1-02 Š®—¹j
+## å®Ÿè£…æ‰‹é †ï¼ˆT1-01 / T1-02 ç›¸å½“ï¼‰
 
-### Step 1: FormServer ‚Å Framer ‚ğg‚¤
+### Step 1: FormServer ã§ Framer ã‚’ä½¿ã†
 
-**FormServer.vb ‚É’Ç‰ÁF**
+**FormServer.vb ã«è¿½åŠ ï¼š**
 
 ```visualbasic
 Imports Experiment.TcpSocket
 Imports Baccarat.Shared.Protocol
+Imports System.Text
 
-Namespace Baccarat.Server.Forms
+Namespace Forms
     Public Class FormServer
-        ' TcpSocket ƒRƒ“ƒ|[ƒlƒ“ƒgiƒfƒUƒCƒi‚Å’Ç‰ÁÏ‚İj
+        ' TcpSocket ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆï¼ˆãƒ‡ã‚¶ã‚¤ãƒŠã§è¿½åŠ æ¸ˆã¿ï¼‰
         ' Private tcpSockets As TcpSockets
         
-        ' sƒtƒŒ[ƒ}[ihandle ‚²‚Æj
+        ' ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã”ã¨ã®ãƒ•ãƒ¬ãƒ¼ãƒãƒ¼ï¼ˆKey: Handleï¼‰
         Private _framers As New Dictionary(Of Integer, LineFramer)
         
         Private Sub FormServer_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            ' TcpSocket ƒvƒƒpƒeƒBİ’èid—vj
+            ' TcpSocket ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£è¨­å®šï¼ˆé‡è¦ï¼‰
             ' tcpSockets.SynchronizingObject = Me
             
-            ' ƒCƒxƒ“ƒgÚ‘±
+            ' ã‚¤ãƒ™ãƒ³ãƒˆæ¥ç¶š
             AddHandler tcpSockets.Accept, AddressOf TcpSocket_Accept
             AddHandler tcpSockets.DataReceive, AddressOf TcpSocket_DataReceive
             AddHandler tcpSockets.Disconnect, AddressOf TcpSocket_Disconnect
             
-            ' ƒT[ƒo‹N“®
+            ' ã‚µãƒ¼ãƒèµ·å‹•
             Try
-                tcpSockets.OpenAsServer(9000)  ' ƒ|[ƒg‚ÍƒvƒŒ[ƒXƒzƒ‹ƒ_
+                tcpSockets.OpenAsServer(9000)  ' ãƒãƒ¼ãƒˆã¯ãƒ—ãƒ¬ãƒ¼ã‚¹ãƒ›ãƒ«ãƒ€
                 AppendLog("Server listening on port 9000")
             Catch ex As Exception
                 AppendLog($"Server startup failed: {ex.Message}")
             End Try
         End Sub
         
-        Private Sub TcpSocket_Accept(handle As Integer)
-            AppendLog($"[ACCEPT] handle={handle}")
-            ' ‚±‚Ìƒnƒ“ƒhƒ‹—p‚ÌƒtƒŒ[ƒ}[‚ğì¬
-            _framers(handle) = New LineFramer()
+        Private Sub TcpSocket_Accept(sender As Object, e As AcceptEventArgs)
+            AppendLog($"[ACCEPT] handle={e.ClientHandle}")
+            ' ã“ã®ãƒãƒ³ãƒ‰ãƒ«ç”¨ã®ãƒ•ãƒ¬ãƒ¼ãƒãƒ¼ã‚’ä½œæˆ
+            _framers(e.ClientHandle) = New LineFramer()
         End Sub
         
-        Private Sub TcpSocket_DataReceive(handle As Integer, data As String)
-            AppendLog($"[RCV] handle={handle}, {data.Length} bytes")
+        Private Sub TcpSocket_DataReceive(sender As Object, e As DataReceiveEventArgs)
+            ' æ³¨æ„: e.Data (ä»®ç§°) ã¯ Byte() å‹
+            ' ä»•æ§˜æ›¸ exprement.md ã«å¾“ã„ã€ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£åã‚’ IntelliSense ã§ç¢ºèªã™ã‚‹ã“ã¨
+
+            ' ä»®ã« e.Data ã¨ã—ã¦å®Ÿè£…
+            Dim text As String = Encoding.UTF8.GetString(e.Data)
+            AppendLog($"[RCV] handle={e.Handle}, {e.Data.Length} bytes")
             
-            If Not _framers.ContainsKey(handle) Then
-                AppendLog($"[WARN] Unknown handle {handle}")
+            If Not _framers.ContainsKey(e.Handle) Then
+                AppendLog($"[WARN] Unknown handle {e.Handle}")
                 Return
             End If
             
-            ' Framer ‚É“n‚µ‚ÄAs‚É•ªŠ„‚³‚¹‚é
-            Dim framer = _framers(handle)
-            AddHandler framer.LineReceived, Sub(line As String)
-                                              OnLineReceived(handle, line)
-                                          End Sub
-            framer.Push(data)
+            ' Framer ã«æµã—ã¦ã€è¡Œã«åˆ†å‰²ã•ã›ã‚‹
+            Dim framer = _framers(e.Handle)
+            
+            ' åˆå›ã®ã¿ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã‚’ã¤ã‘ã‚‹ï¼ˆã¾ãŸã¯ Framer ä½œæˆæ™‚ã«ã¤ã‘ã‚‹ï¼‰
+            ' ã“ã“ã§ã¯ç°¡ç•¥åŒ–ã®ãŸã‚æ¯å›è¿½åŠ ã—ãªã„ã‚ˆã†ã«æ³¨æ„ãŒå¿…è¦
+            ' â†’ Acceptæ™‚ã«ãƒãƒ³ãƒ‰ãƒ©ã‚’ã¤ã‘ã‚‹ã®ãŒãƒ™ã‚¹ãƒˆ
         End Sub
+        
+        ' ä¿®æ­£ç‰ˆ Accept
+        ' Private Sub TcpSocket_Accept(sender As Object, e As AcceptEventArgs)
+        '     Dim framer = New LineFramer()
+        '     AddHandler framer.LineReceived, Sub(line) OnLineReceived(e.ClientHandle, line)
+        '     _framers(e.ClientHandle) = framer
+        ' End Sub
         
         Private Sub OnLineReceived(handle As Integer, line As String)
             AppendLog($"[LINE] handle={handle}: {line}")
-            ' ‚±‚±‚Å ServerHost.OnLineReceived() ‚ğŒÄ‚ÔiŸ‚ÌƒXƒeƒbƒvj
+            ' ã“ã“ã‹ã‚‰ ServerHost.OnLineReceived() ã‚’å‘¼ã¶ï¼ˆæ¬¡ã®ã‚¹ãƒ†ãƒƒãƒ—ï¼‰
         End Sub
         
-        Private Sub TcpSocket_Disconnect(handle As Integer)
-            AppendLog($"[DISCONNECT] handle={handle}")
-            _framers.Remove(handle)
+        Private Sub TcpSocket_Disconnect(sender As Object, e As DisconnectEventArgs)
+            AppendLog($"[DISCONNECT] handle={e.Handle}")
+            _framers.Remove(e.Handle)
         End Sub
         
         Private Sub AppendLog(message As String)
+            If txtLog.InvokeRequired Then
+                txtLog.Invoke(Sub() AppendLog(message))
+                Return
+            End If
             txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] {message}" & vbCrLf)
-            txtLog.SelectionStart = txtLog.TextLength
-            txtLog.ScrollToCaret()
         End Sub
     End Class
 End Namespace
 ```
 
-### Step 2: ‘—M‚É `\n` ‚ğ•t‚¯‚é
+### Step 2: é€ä¿¡æ™‚ã« `\n` ã‚’ã¤ã‘ã‚‹
 
-**ServerHost / Client ‚Ì‚Ç‚±‚Å‘—M‚·‚é‚Æ‚«‚Å‚àF**
+**ServerHost / Client ã®ã©ã“ã§é€ä¿¡ã™ã‚‹ã¨ã—ã¦ã‚‚ï¼š**
 
 ```visualbasic
 Private Sub SendMessage(handle As Integer, message As String)
-    ' ––”ö‚É LF ‚ğ•t‚¯‚Ä‘—M
-    tcpSockets.Send(handle, message & vbLf)
+    ' æœ«å°¾ã« LF ã‚’ã¤ã‘ã¦é€ä¿¡
+    Dim data As Byte() = Encoding.UTF8.GetBytes(message & vbLf)
+    tcpSockets.Send(handle, data)
     AppendLog($"[SND] {message}")
 End Sub
 ```
 
 ---
 
-## ó“üŠî€iTC-003j
+## å®Œäº†åŸºæº–ï¼ˆTC-003ï¼‰
 
-- •¡”ƒƒbƒZ[ƒW‚ğˆêŠ‡óM‚µ‚Ä‚àAŠes‚ª³‚µ‚­•ªŠ„‚³‚ê‚é
-- •ªŠ„óMi1•¶š‚¸‚Â“™j‚Å‚àA`\n` ‚ª—ˆ‚Ä‰‚ß‚Ä1s‚Æ‚µ‚ÄŠ®¬‚·‚é
+- çŸ­ã„ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’é€£æ‰“ã—ã¦ã‚‚ã€ã¾ã¨ã‚ã¦é€ä¿¡ã—ã¦ã‚‚
+- å—ä¿¡å´ï¼ˆ1è¡Œå‡¦ç†ï¼‰ã§ã¯ã€`\n` åŒºåˆ‡ã‚Šã§æ­£ã—ã1è¡Œã¨ã—ã¦å¾©å…ƒã•ã‚Œã‚‹
 
 ---
 
-## Ÿ‚ÌƒXƒeƒbƒv
+## æ¬¡ã®ã‚¹ãƒ†ãƒƒãƒ—
 
-T1 ‚ªŠ®—¹‚µ‚½‚çAT2-01iƒT[ƒo‘Ò‹@EƒƒOj‚Éi‚ŞB
+T1 ãŒå®Œäº†ã—ãŸã‚‰ã€T2-01ï¼ˆã‚µãƒ¼ãƒå¾…æ©Ÿãƒ»ãƒ­ã‚°ï¼‰ã«é€²ã‚€ã€‚
+
+```
