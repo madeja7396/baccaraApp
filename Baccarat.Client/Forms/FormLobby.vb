@@ -50,5 +50,21 @@ Namespace Forms
         Private Sub AppendLog(line As String)
             ' TODO: append to txtLog
         End Sub
+
+        Private Sub FormLobby_Load_1(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        End Sub
+
+        Private Sub FlowLayoutPanel1_Paint(sender As Object, e As PaintEventArgs)
+
+        End Sub
+
+        Private Sub TextBox1_TextChanged(sender As Object, e As EventArgs)
+
+        End Sub
+
+        Private Sub txtLog_TextChanged(sender As Object, e As EventArgs) Handles txtLog.TextChanged
+
+        End Sub
     End Class
 End Namespace
