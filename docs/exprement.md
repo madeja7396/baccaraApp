@@ -222,3 +222,18 @@
 
 - 本仕様に基づき、行フレーミング（LF区切り）と UTF-8 固定での送受信を実装すること。
 
+---
+
+## 11. 補足：BET/BET_ACK 仕様（現行実装に基づく）
+
+実装スナップショット（現状のサーバ動作要約）
+- HELLO 受付→nickname 検証・満席拒否→WELCOME 送信
+- 両者 READY で `PHASE,BETTING,round`
+- BET 受信
+  - 許容フォーマット: `BET,playerId,target,amount` または `BET,target,amount`
+  - 拒否理由: `PHASE_MISMATCH/BAD_ARGS/BAD_PLAYER/BAD_TARGET/BAD_AMOUNT/NO_CHIPS/ALREADY_LOCKED`
+  - 応答: `BET_ACK,true` or `BET_ACK,false,<reason>`
+- 両者Lock後: `PHASE,DEALING` → `DEAL` → 判定/配当 → `PHASE,RESULT` → `ROUND_RESULT,...` → 次ラウンド `PHASE,BETTING`
+
+補足: 文字コード UTF-8、行終端 LF 固定。受信は `e.Data`（Byte()）。
+

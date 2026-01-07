@@ -1,6 +1,6 @@
 # 要件定義書（厳格版）
 **対戦型バカラ（VB / Experiment.TcpSocket）**  
-作成日: 2025-12-24　版: **v1.1（実装開始版・ルールウィンドウ反映）**
+作成日: 2025-12-24　版: **v1.2（HELLO/READY/BET/RESULT 実装反映）**
 
 ---
 
@@ -202,84 +202,39 @@ UI要件は、操作可能タイミングを Phase によって厳格に制御�
 
 ---
 
-## 6. 通信プロトコル要件
-通信は TCP 上のテキスト行（1行=1メッセージ）とし、改行（LF）をメッセージ終端とする。  
-DataReceive はメッセージ境界を保証しないため、受信側は行フレーミング（バッファリング）を実装しなければならない。
+## 6. 通信プロトコル要件（更新）
+通信は TCP 上のテキスト行（LF区切り）。以下は実装で確定した挙動の追記。
 
-### プロトコル要件一覧
+### 6.1 コマンド定義（最小セット・確定）
 
-| ID | 要件（shall） | 優先度 | 受入基準 | 備考 |
-|---|---|---:|---|---|
-| PR-001 | メッセージは「CMD,param1,param2,...」形式でなければならない。 | MUST | カンマ区切りで解析できる。 |  |
-| PR-002 | メッセージ終端は LF（\n）でなければならない。 | MUST | 送信時に必ず末尾に \n が付与される。 | CRLF受信は許容 |
-| PR-003 | 受信側は分割/結合受信に耐える行フレーミングを実装しなければならない。 | MUST | 複数行が一括受信/分割受信でも正しく処理される。 |  |
-| PR-004 | 未知コマンド、パラメータ不足、型不正を検出した場合、ERROR を返さなければならない。 | MUST | ERROR,reason が送信されログに残る。 |  |
-| PR-005 | サーバは受理できない操作に対して理由を返さなければならない。 | SHOULD | BET_ACK,false,reason 等で理由が返る。 | 簡略可 |
-
-### 6.1 コマンド定義（最小セット）
-
-| CMD | 方向 | 形式 | 説明 | 備考 |
-|---|---|---|---|---|
-| HELLO | C→S | HELLO,nickname | 接続後の自己申告。nicknameは必須。 |  |
-| WELCOME | S→C | WELCOME,playerId,seed,maxRounds,initChips | 受付応答と初期値。 | seed等はプレースホルダ |
-| READY | C→S | READY | 準備完了通知（全員READYで開始）。 |  |
-| PHASE | S→C | PHASE,phase,round | フェーズ遷移通知。 |  |
-| BET | C→S | BET,playerId,target,amount | ベット確定。 | playerIdはWELCOMEに従う |
-| BET_ACK | S→C | BET_ACK,ok,reason | ベット受理/拒否。 | 予定（簡略可） |
-| DEAL | S→C | DEAL,playerCards...,bankerCards... | 配札結果。 | カード表現はプレースホルダ |
-| ROUND_RESULT | S→C | ROUND_RESULT,winner,payoutP1,payoutP2,chipsP1,chipsP2 | 勝敗・配当・所持金更新。 | 配当はプレースホルダ可 |
-| GAME_OVER | S→C | GAME_OVER,winPlayerId,chipsP1,chipsP2 | 試合終了。 | 予定 |
-| ERROR | S→C | ERROR,reason | エラー通知。 |  |
-| BYE | C↔S | BYE | 切断通知。 | 予定 |
-
----
-
-## 7. 非機能要件
-
-| ID | 要件（shall） | 優先度 | 受入基準 | 備考 |
-|---|---|---:|---|---|
-| NF-001 | UIは通信処理でフリーズしてはならない。 | MUST | 接続中/受信中でもフォーム操作が応答する。 | 重い処理は避ける |
-| NF-002 | UI更新は必ずUIスレッド上で行わなければならない。 | MUST | Cross-thread 例外が発生しない。 | SynchronizingObject設定 |
-| NF-003 | ログは最低限「時刻（任意）・方向（送/受）・内容」を残さなければならない。 | SHOULD | 送受信が追跡可能。 | 時刻は任意 |
-| NF-004 | 不正入力はクライアント側で予防し、サーバ側で必ず検証しなければならない。 | MUST | 改造クライアントでもサーバが破綻しない。 | 二重防御 |
-| NF-005 | 他PCへコピーして実行できなければならない。 | MUST | bin 配下に DLL が同梱され、起動できる。 | Copy Local必須 |
-
----
-
-## 8. 受入テスト（最低限）
-受入基準は、要件IDに対応するテストケースの合格をもって満たす。
-
-| TC | 目的 | 手順 | 期待結果 | 対応要件 |
-|---|---|---|---|---|
-| TC-001 | 接続/ハンドシェイク | サーバ起動→2クライアント接続→HELLO送信 | WELCOME受信、Status/Log更新 | F-001..F-005, UI-001..003 |
-| TC-002 | 不正ニックネーム拒否 | nickname空でHELLO送信（改造/手動） | ERROR,INVALID_NAME | F-004, NF-004 |
-| TC-003 | 行フレーミング | 複数メッセージを一括送信/分割送信 | 全メッセージが欠落なく処理 | PR-003 |
-| TC-004 | Phase制約 | BETTING以外でBET送信 | 拒否（BET_ACK or ERROR） | F-008, UI-101 |
-| TC-005 | ルールウィンドウ常時参照 | 全PhaseでRulesを開閉 | 非モーダルで参照でき、ゲーム進行に影響なし | F-013, UI-201..203 |
-
----
-
-## 付録A. Phaseと許可操作（受入基準に直結）
-
-| Phase | 説明 | クライアント許可操作 | サーバ処理 |
+| CMD | 方向 | 形式 | 説明 |
 |---|---|---|---|
-| LOBBY | 接続待ち | 接続/切断、（ルール参照） | 2人揃うまで待機 |
-| BETTING | ベット受付 | ベット入力/確定、（ルール参照） | 全員確定でDEALINGへ |
-| DEALING | 配札中 | 操作不可（ルール参照のみ） | 配札・判定・配当計算 |
-| RESULT | 結果表示 | 次へ、（ルール参照） | 次ラウンドへ/終了判定 |
-| GAMEOVER | 試合終了 | ロビーへ/再戦（予定） | 状態初期化（予定） |
+| HELLO | C→S | HELLO,nickname | サーバが nickname を検証（空/長すぎは拒否）。満席時は `ERROR,ROOM_FULL`。|
+| WELCOME | S→C | WELCOME,playerId,seed,maxRounds,initChips | 受付応答。seedはプレースホルダ。|
+| READY | C→S | READY | 両者READYで `PHASE,BETTING,round` を両者に通知。|
+| PHASE | S→C | PHASE,phase,round | フェーズ遷移通知（BETTING/DEALING/RESULT）。|
+| BET | C→S | BET,playerId,target,amount または BET,target,amount | サーバは handle から playerId を特定するため、どちらの形式も許容。|
+| BET_ACK | S→C | BET_ACK,ok[,reason] | 受理時 `true`、拒否時 `false,reason`（PHASE_MISMATCH/BAD_ARGS/BAD_PLAYER/BAD_TARGET/BAD_AMOUNT/NO_CHIPS/ALREADY_LOCKED）。|
+| DEAL | S→C | DEAL | 配札完了通知（詳細表現は今後拡張）。|
+| ROUND_RESULT | S→C | ROUND_RESULT,winner,payoutP1,payoutP2,chipsP1,chipsP2 | 勝敗と配当、最新所持金。|
+| ERROR | S→C | ERROR,reason | BAD_FORMAT/UNSUPPORTED など。|
+
+### 6.2 フェーズ遷移（確定した最小ルート）
+- LOBBY（初期）
+  - 両者 HELLO→WELCOME→READY 完了で BETTING(round=1)
+- BETTING
+  - 双方が BET を確定（Lock）した時点で DEALING
+- DEALING
+  - 配札/判定/配当後、RESULT
+- RESULT
+  - 直後に内部リセット（bets/ready）し Round を +1 し、BETTING(round+1) へ自動遷移
 
 ---
 
-## 付録B. プレースホルダ一覧
+## 8. 受入テスト（更新）
+- 異常系: Phase外BET、金額不正、所持超過、重複BET は `BET_ACK,false,<reason>` を返すこと。
+- 形式不正や未対応コマンドに対し、`ERROR,BAD_FORMAT/UNSUPPORTED` を返すこと。
 
-| 項目 | 現時点の扱い | 確定タイミング |
-|---|---|---|
-| ポート番号 | プレースホルダ（例: 20000/8888） | 実装開始時に定数化 |
-| MaxRounds | プレースホルダ | ゲーム進行実装時 |
-| 初期チップ | プレースホルダ | ゲーム進行実装時 |
-| デック数/山札 | プレースホルダ | 配札実装時 |
-| カード表現（DEAL） | プレースホルダ（例: S-13） | DEAL実装時 |
-| 配当率 | 予定（ルールタブで明示） | 判定/配当実装時 |
-| FormResult | 予定（省略可） | 完成度調整時 |
-| 切断時の勝敗扱い | 予定 | 異常系実装時 |
+---
+
+注意: DEAL の詳細表現（カード配列）はプレースホルダのまま。今後 `DEAL,playerCards...,bankerCards...` 形式に拡張予定。
