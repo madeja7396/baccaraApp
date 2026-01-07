@@ -131,8 +131,139 @@ Namespace Net
         End Sub
 
         Private Sub HandleBet(handle As Long, msg As Message)
-            ' TODO: validate phase and bet amount
+            ' Validate phase
+            If _state.Phase <> GamePhase.BETTING Then
+                SendTo(handle, $"{CommandNames.BET_ACK},false,PHASE_MISMATCH")
+                Return
+            End If
+
+            ' Parse BET: BET,playerId,target,amount もしくは BET,target,amount
+            Dim pId As Integer = FindPlayerIdByHandle(handle)
+            Dim targetStr As String = Nothing
+            Dim amountStr As String = Nothing
+
+            If msg.Params Is Nothing OrElse msg.Params.Length < 2 Then
+                SendTo(handle, $"{CommandNames.BET_ACK},false,BAD_ARGS")
+                Return
+            End If
+
+            If msg.Params.Length = 3 Then
+                ' playerId,target,amount
+                If Not Integer.TryParse(msg.Params(0), pId) Then
+                    SendTo(handle, $"{CommandNames.BET_ACK},false,BAD_PLAYER")
+                    Return
+                End If
+                targetStr = msg.Params(1)
+                amountStr = msg.Params(2)
+            ElseIf msg.Params.Length = 2 Then
+                targetStr = msg.Params(0)
+                amountStr = msg.Params(1)
+            Else
+                SendTo(handle, $"{CommandNames.BET_ACK},false,BAD_ARGS")
+                Return
+            End If
+
+            If pId <> 1 AndAlso pId <> 2 Then
+                SendTo(handle, $"{CommandNames.BET_ACK},false,BAD_PLAYER")
+                Return
+            End If
+
+            Dim target As BetTarget
+            Select Case targetStr.Trim().ToUpperInvariant()
+                Case "PLAYER" : target = BetTarget.Player
+                Case "BANKER" : target = BetTarget.Banker
+                Case "TIE" : target = BetTarget.Tie
+                Case Else
+                    SendTo(handle, $"{CommandNames.BET_ACK},false,BAD_TARGET")
+                    Return
+            End Select
+
+            Dim amount As Integer
+            If Not Integer.TryParse(amountStr, amount) OrElse amount <= 0 Then
+                SendTo(handle, $"{CommandNames.BET_ACK},false,BAD_AMOUNT")
+                Return
+            End If
+
+            Dim chips As Integer = 0
+            If Not _state.Chips.TryGetValue(pId, chips) OrElse amount > chips Then
+                SendTo(handle, $"{CommandNames.BET_ACK},false,NO_CHIPS")
+                Return
+            End If
+
+            ' Prevent re-bet
+            Dim existing As BetInfo = Nothing
+            If _state.Bets.TryGetValue(pId, existing) AndAlso existing IsNot Nothing AndAlso existing.Locked Then
+                SendTo(handle, $"{CommandNames.BET_ACK},false,ALREADY_LOCKED")
+                Return
+            End If
+
+            ' Accept bet
+            Dim bet = New BetInfo With {.Target = target, .Amount = amount, .Locked = True}
+            _state.Bets(pId) = bet
+            SendTo(handle, $"{CommandNames.BET_ACK},true")
+
+            ' If both players have locked bets, settle
+            If IsBothBetsLocked() Then
+                SettleRound()
+            End If
         End Sub
+
+        Private Function IsBothBetsLocked() As Boolean
+            Dim b1 As BetInfo = Nothing, b2 As BetInfo = Nothing
+            If Not _state.Bets.TryGetValue(1, b1) Then Return False
+            If Not _state.Bets.TryGetValue(2, b2) Then Return False
+            Return b1 IsNot Nothing AndAlso b1.Locked AndAlso b2 IsNot Nothing AndAlso b2.Locked
+        End Function
+
+        Private Sub SettleRound()
+            ' DEALING → RESULT
+            _state.Phase = GamePhase.DEALING
+            Broadcast($"{CommandNames.PHASE},{GamePhase.DEALING},{_state.RoundIndex}")
+
+            ' Deal and judge
+            _rules.DealInitial(_state)
+            _rules.ApplyThirdCardRule(_state)
+            Dim winner = _rules.DetermineWinner(_state)
+
+            ' Optional: send DEAL (placeholder)
+            Broadcast($"{CommandNames.DEAL}")
+
+            ' Compute payouts
+            Dim p1delta As Integer = 0
+            Dim p2delta As Integer = 0
+            Dim b1 As BetInfo = Nothing, b2 As BetInfo = Nothing
+            _state.Bets.TryGetValue(1, b1)
+            _state.Bets.TryGetValue(2, b2)
+            If b1 IsNot Nothing Then p1delta = _payout.CalcPayout(b1.Target, b1.Amount, winner)
+            If b2 IsNot Nothing Then p2delta = _payout.CalcPayout(b2.Target, b2.Amount, winner)
+
+            _state.Chips(1) += p1delta
+            _state.Chips(2) += p2delta
+
+            ' RESULT
+            _state.Phase = GamePhase.RESULT
+            Broadcast($"{CommandNames.PHASE},{GamePhase.RESULT},{_state.RoundIndex}")
+            Broadcast($"{CommandNames.ROUND_RESULT},{winner},{p1delta},{p2delta},{_state.Chips(1)},{_state.Chips(2)}")
+
+            ' Prepare next round: reset ready & bets, increment round, move to BETTING
+            _state.Bets.Clear()
+            For i = 0 To _state.Clients.Length - 1
+                If _state.Clients(i) IsNot Nothing Then _state.Clients(i).IsReady = False
+            Next
+            _state.RoundIndex += 1
+            _state.Phase = GamePhase.BETTING
+            Broadcast($"{CommandNames.PHASE},{GamePhase.BETTING},{_state.RoundIndex}")
+        End Sub
+
+        Private Function FindPlayerIdByHandle(handle As Long) As Integer
+            For i = 0 To _state.Clients.Length - 1
+                Dim ci = _state.Clients(i)
+                If ci IsNot Nothing AndAlso ci.Handle = handle Then
+                    Return ci.PlayerId
+                End If
+            Next
+            Return 0
+        End Function
 
         Public Sub SendTo(handle As Long, message As String)
             If _sendAction Is Nothing Then

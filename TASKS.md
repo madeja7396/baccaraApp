@@ -37,20 +37,20 @@
 ## 3. READY・Phase管理 (TC-001 / F-006～008)
 | ID | 優先度 | タスク | 対象 | 備考 |
 |---|---:|---|---|---|
-| T3-01 | P0 | READY 受信と2人待機 | Server | 済（両者READY→BETTINGへ） |
+| T3-01 | P0 | READY 受信と2人待機 | Server | 済（両者READY→BETTING） |
 | T3-02 | P0 | Phase管理 (LOBBY->BETTING...) | Server | 初期ルート実装 |
-| T3-03 | P0 | PHASE,phase,round 送信 | Server | 済（BETTING遷移時に送信） |
-| T3-04 | P0 | Phase外のBET拒否 | Server | 未実装 |
+| T3-03 | P0 | PHASE,phase,round 送信 | Server | 済 |
+| T3-04 | P0 | Phase外のBET拒否 | Server | 一部実装（BET_ACK,false,PHASE_MISMATCH） |
 
 ---
 
 ## 4. BET・判定・配当 (F-009～011)
 | ID | 優先度 | タスク | 対象 | 備考 |
 |---|---:|---|---|---|
-| T4-01 | P0 | BET 受信と確定(Lock) | Server | 未実装 |
-| T4-02 | P0 | 配札 (DEAL) と勝敗判定 | Server | 未実装 |
-| T4-03 | P0 | ROUND_RESULT 送信 | Server | 未実装 |
-| T4-04 | P0 | チップ計算と更新通知 | Server | 未実装 |
+| T4-01 | P0 | BET 受信と確定(Lock) | Server | 済（重複防止/所持確認） |
+| T4-02 | P0 | 配札 (DEAL) と勝敗判定 | Server | 済（プレースホルダルール呼出） |
+| T4-03 | P0 | ROUND_RESULT 送信 | Server | 済 |
+| T4-04 | P0 | チップ計算と更新通知 | Server | 済 |
 | T4-05 | P1 | GAME_OVER 判定 | Server | 未実装 |
 
 ---
@@ -65,3 +65,11 @@
 | T5-05 | P0 | Game: ベット確定後の変更不可 | Client | 未着手 |
 | T5-06 | P0 | Game: Result時のNextボタン制御 | Client | 未着手 |
 | T5-07 | P0 | Rules: ルールウィンドウ表示 | Client | 未着手 |
+
+---
+
+テストベース
+- 2クライアントで接続→HELLO/WELCOME→両者READY→PHASE=BETTING 受信
+- クライアントから `BET,playerId,target,amount`（または `BET,target,amount`）を双方送信
+- サーバが `BET_ACK,true` を返し、両者Lockで DEAL→RESULT→PHASE=BETTING(round+1) を Broadcast
+- 異常パス: Phase外BET, 所持超過, BAD_ARGS は `BET_ACK,false,<reason>` を返す
