@@ -4,6 +4,15 @@ Namespace Forms
     Partial Class FormLobby
         Inherits Form
 
+        ' --- 共同開発者向けガイド ---
+        ' このフォームは「接続・待機」画面です。
+        ' - 入力欄: txtIp / txtNickname
+        ' - ボタン: btnConnect （必要なら btnDisconnect を追加）
+        ' - ログ: txtLog （ReadOnly/VerticalScroll を推奨）
+        ' 通信処理は `FormLobby.Comms.vb` 側で TcpSockets を初期化し、
+        ' Connect 時に HELLO を送信、受信は LineFramer で 1 行に復元してログ出力します。
+        ' デザイナーでコントロールのプロパティ（Anchor, TabIndex 等）を整えると操作性が向上します。
+
         <System.Diagnostics.DebuggerNonUserCode()>
         Protected Overrides Sub Dispose(ByVal disposing As Boolean)
             Try

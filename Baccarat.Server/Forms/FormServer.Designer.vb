@@ -4,6 +4,13 @@ Namespace Forms
     Partial Class FormServer
         Inherits Form
 
+        ' --- 共同開発者向けガイド ---
+        ' このフォームはサーバの起動/停止とログ可視化を担います。
+        ' - `TcpSockets1` はデザイナーで貼り付け、`SynchronizingObject=Me` を設定。
+        ' - 起動: btnStart → `TcpSockets1.OpenAsServer(Port)` → 状態表示を Running に。
+        ' - 停止: btnStop → `TcpSockets1.Close(handle)` → 状態表示を Stopped に。
+        ' - 受信は `FormServer.vb` 側で LineFramer を使って 1 行に復元し、`ServerHost` へ橋渡しします。
+
         <System.Diagnostics.DebuggerNonUserCode()>
         Protected Overrides Sub Dispose(ByVal disposing As Boolean)
             Try

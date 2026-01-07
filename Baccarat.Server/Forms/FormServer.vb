@@ -9,6 +9,19 @@ Namespace Forms
     ''' <summary>
     ''' サーバー用メインフォーム
     ''' </summary>
+    ''' <remarks>
+    ''' 【共同開発者向け UI 実装ヒント（追記）】
+    ''' - 目的: サーバーの起動/停止、接続イベントのログ可視化、`ServerHost` との橋渡し。
+    ''' - コントロール命名: 起動/停止ボタンは `btnStart`/`btnStop`、ログは `txtLog` を使用。
+    ''' - TcpSockets コンポーネント: デザイナー上に貼り付け、`SynchronizingObject=Me` に設定（UIスレッドでイベントを受ける）。
+    ''' - 受信処理: `DataReceive` → UTF-8 文字列化 → `LineFramer` に `Push` → 1行ごとに `ServerHost.OnLineReceived` へ。
+    ''' - 送信処理: `ServerHost` から受け取った文字列に LF を付与して `TcpSockets1.Send`。必ず 1 行 = 1 メッセージ。
+    ''' - ログ: UI スレッド保証あり。`AppendLog` 経由で時刻付きで追記（デバッグで重要）。
+    ''' - 最低限の結合テスト手順:
+    '''   1) サーバを起動（btnStart）→ ログにポートが出る
+    '''   2) クライアントから接続 → `Accept`, `HELLO` が行として流れる
+    '''   3) `READY` を両者から送ると `PHASE,BETTING` が Broadcast される
+    ''' </remarks>
     Public Class FormServer
         Inherits System.Windows.Forms.Form
 
@@ -87,11 +100,13 @@ Namespace Forms
         End Sub
 
         Private Sub OnDataReceive(sender As Object, e As DataReceiveEventArgs)
-            ' T1-00: Data property is available on DataReceiveEventArgs per experiment spec.
+            ' データ受信イベントが発生したときの処理
             Try
+                ' 受信データを UTF-8 文字列に変換
                 Dim text As String = Encoding.UTF8.GetString(e.Data)
 
                 If _framers.ContainsKey(e.Handle) Then
+                    ' 対応するフレーマーがあればデータをプッシュ
                     _framers(e.Handle).Push(text)
                 Else
                     AppendLog($"[WARN] Received data from unknown handle {e.Handle}")
@@ -103,6 +118,7 @@ Namespace Forms
 
         Private Sub SendMessage(handle As Long, message As String)
             Try
+                ' メッセージに LF を付加してバイト配列に変換
                 Dim data As Byte() = Encoding.UTF8.GetBytes(message & vbLf)
                 TcpSockets1.Send(handle, data)
                 AppendLog($"[SND] [{handle}] {message}")
