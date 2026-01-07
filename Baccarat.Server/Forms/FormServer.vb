@@ -34,7 +34,7 @@ Namespace Forms
             InitializeComponent()
             Dim logger = New Logger(AddressOf AppendLog)
             ' ServerHost needs to be able to send data back. Inject sendAction.
-            _host = New Net.ServerHost(logger, New BaccaratRulesPlaceholder(), New PayoutCalculatorPlaceholder(), AddressOf SendMessage)
+            _host = New Net.ServerHost(logger, New BaccaratRulesPlaceholder(), New PayoutCalculatorPlaceholder(), AddressOf SendMessage, AddressOf CloseConnection)
         End Sub
 
         Private Sub FormServer_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -124,6 +124,15 @@ Namespace Forms
                 AppendLog($"[SND] [{handle}] {message}")
             Catch ex As Exception
                 AppendLog($"[ERR] SendMessage: {ex.Message}")
+            End Try
+        End Sub
+
+        Private Sub CloseConnection(handle As Long)
+            Try
+                TcpSockets1.Close(handle)
+                AppendLog($"[CLOSE] {handle}")
+            Catch ex As Exception
+                AppendLog($"[ERR] Close: {ex.Message}")
             End Try
         End Sub
 

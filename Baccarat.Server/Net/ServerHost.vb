@@ -14,12 +14,14 @@ Namespace Net
         Private ReadOnly _state As GameState = New GameState()
         Private ReadOnly _clients As New List(Of Long)()
         Private ReadOnly _sendAction As Action(Of Long, String)
+        Private ReadOnly _closeAction As Action(Of Long)
 
-        Public Sub New(logger As Logger, rules As IBaccaratRules, payout As IPayoutCalculator, Optional sendAction As Action(Of Long, String) = Nothing)
+        Public Sub New(logger As Logger, rules As IBaccaratRules, payout As IPayoutCalculator, Optional sendAction As Action(Of Long, String) = Nothing, Optional closeAction As Action(Of Long) = Nothing)
             _logger = logger
             _rules = rules
             _payout = payout
             _sendAction = sendAction
+            _closeAction = closeAction
         End Sub
 
         Public Sub StartServer(port As Integer)
@@ -32,6 +34,12 @@ Namespace Net
 
         Public Sub OnAccept(handle As Long)
             _logger.Info($"Accept handle={handle}")
+            ' 満席（2名）なら拒否
+            If _clients.Count >= 2 Then
+                SendTo(handle, $"{CommandNames.ERROR},ROOM_FULL")
+                If _closeAction IsNot Nothing Then _closeAction.Invoke(handle)
+                Return
+            End If
             If Not _clients.Contains(handle) Then
                 _clients.Add(handle)
             End If
@@ -97,8 +105,8 @@ Namespace Net
                 pid = 2
                 _state.Clients(1) = New ClientInfo With {.Handle = handle, .PlayerId = pid, .Nickname = nickname}
             Else
-                ' room full (予定)
                 SendTo(handle, $"{CommandNames.ERROR},ROOM_FULL")
+                If _closeAction IsNot Nothing Then _closeAction.Invoke(handle)
                 Return
             End If
 
@@ -245,6 +253,14 @@ Namespace Net
             Broadcast($"{CommandNames.PHASE},{GamePhase.RESULT},{_state.RoundIndex}")
             Broadcast($"{CommandNames.ROUND_RESULT},{winner},{p1delta},{p2delta},{_state.Chips(1)},{_state.Chips(2)}")
 
+            ' GAME_OVER 判定（MaxRounds/チップ枯渇）
+            If IsGameOver() Then
+                Dim winId As Integer = If(_state.Chips(1) > _state.Chips(2), 1, If(_state.Chips(2) > _state.Chips(1), 2, 0))
+                _state.Phase = GamePhase.GAMEOVER
+                Broadcast($"{CommandNames.GAME_OVER},{winId},{_state.Chips(1)},{_state.Chips(2)}")
+                Return
+            End If
+
             ' Prepare next round: reset ready & bets, increment round, move to BETTING
             _state.Bets.Clear()
             For i = 0 To _state.Clients.Length - 1
@@ -254,6 +270,13 @@ Namespace Net
             _state.Phase = GamePhase.BETTING
             Broadcast($"{CommandNames.PHASE},{GamePhase.BETTING},{_state.RoundIndex}")
         End Sub
+
+        Private Function IsGameOver() As Boolean
+            ' ラウンド上限 or どちらかのチップ枯渇
+            If _state.RoundIndex >= Baccarat.Shared.Constants.MaxRounds Then Return True
+            If _state.Chips(1) <= 0 OrElse _state.Chips(2) <= 0 Then Return True
+            Return False
+        End Function
 
         Private Function FindPlayerIdByHandle(handle As Long) As Integer
             For i = 0 To _state.Clients.Length - 1
