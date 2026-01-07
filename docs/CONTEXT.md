@@ -215,21 +215,16 @@ UI要件は、操作可能タイミングを Phase によって厳格に制御�
 | PHASE | S→C | PHASE,phase,round | フェーズ遷移通知（BETTING/DEALING/RESULT/GAMEOVER）。|
 | BET | C→S | BET,playerId,target,amount または BET,target,amount | サーバは handle から playerId を特定するため、どちらの形式も許容。|
 | BET_ACK | S→C | BET_ACK,ok[,reason] | 受理時 `true`、拒否時 `false,reason`（PHASE_MISMATCH/BAD_ARGS/BAD_PLAYER/BAD_TARGET/BAD_AMOUNT/NO_CHIPS/ALREADY_LOCKED）。|
-| DEAL | S→C | DEAL | 配札完了通知（詳細表現は今後拡張）。|
+| DEAL | S→C | DEAL,playerCodes,bankerCodes | カード配列を `S-01|H-13|...` のパイプ区切りで通知（現段階）。今後拡張可。|
 | ROUND_RESULT | S→C | ROUND_RESULT,winner,payoutP1,payoutP2,chipsP1,chipsP2 | 勝敗と配当、最新所持金。|
 | GAME_OVER | S→C | GAME_OVER,winPlayerId,chipsP1,chipsP2 | MaxRounds 到達またはチップ枯渇時。引き分けは `winPlayerId=0`。|
 | ERROR | S→C | ERROR,reason | BAD_FORMAT/UNSUPPORTED/INVALID_NAME/ROOM_FULL など。`ROOM_FULL` の場合は直後に切断。|
 
-### 6.2 フェーズ遷移（確定した最小ルート）
-- LOBBY（初期）
-  - 両者 HELLO→WELCOME→READY 完了で BETTING(round=1)
-- BETTING
-  - 双方が BET を確定（Lock）した時点で DEALING
-- DEALING
-  - 配札/判定/配当後、RESULT
-- RESULT
-  - GAME_OVER 条件（MaxRounds 到達 or チップ枯渇）なら `GAME_OVER` 送信して終了
-  - それ以外は内部リセット（bets/ready）し Round を +1、BETTING(round+1) へ自動遷移
+---
+
+## 6.x 山札（Shoe）運用（実装方針）
+- 簡易運用：各ラウンドの DEAL 直前に、山札の残数が少なければ（閾値:6枚）新たに `DeckCount` デック分を生成しシャッフルする。
+- 将来的にカットカード/バーナカード等を導入する余地を残す。
 
 ---
 

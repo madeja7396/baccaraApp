@@ -15,6 +15,7 @@ Namespace Net
         Private ReadOnly _clients As New List(Of Long)()
         Private ReadOnly _sendAction As Action(Of Long, String)
         Private ReadOnly _closeAction As Action(Of Long)
+        Private ReadOnly _rng As New Random()
 
         Public Sub New(logger As Logger, rules As IBaccaratRules, payout As IPayoutCalculator, Optional sendAction As Action(Of Long, String) = Nothing, Optional closeAction As Action(Of Long) = Nothing)
             _logger = logger
@@ -26,6 +27,7 @@ Namespace Net
 
         Public Sub StartServer(port As Integer)
             _logger.Info($"Server start on {port}")
+            BuildAndShuffleShoe()
         End Sub
 
         Public Sub StopServer()
@@ -228,13 +230,18 @@ Namespace Net
             _state.Phase = GamePhase.DEALING
             Broadcast($"{CommandNames.PHASE},{GamePhase.DEALING},{_state.RoundIndex}")
 
-            ' Deal and judge
+            ' Ensure shoe and deal
+            EnsureShoe()
             _rules.DealInitial(_state)
             _rules.ApplyThirdCardRule(_state)
-            Dim winner = _rules.DetermineWinner(_state)
 
-            ' Optional: send DEAL (placeholder)
-            Broadcast($"{CommandNames.DEAL}")
+            ' Broadcast DEAL with card codes（P1,P2[,P3],B1,B2[,B3]）
+            Dim playerCodes = String.Join("|", _state.PlayerHand.Cards.Select(Function(c) c.ToCode()))
+            Dim bankerCodes = String.Join("|", _state.BankerHand.Cards.Select(Function(c) c.ToCode()))
+            Broadcast($"{CommandNames.DEAL},{playerCodes},{bankerCodes}")
+
+            ' Determine winner
+            Dim winner = _rules.DetermineWinner(_state)
 
             ' Compute payouts
             Dim p1delta As Integer = 0
@@ -253,7 +260,7 @@ Namespace Net
             Broadcast($"{CommandNames.PHASE},{GamePhase.RESULT},{_state.RoundIndex}")
             Broadcast($"{CommandNames.ROUND_RESULT},{winner},{p1delta},{p2delta},{_state.Chips(1)},{_state.Chips(2)}")
 
-            ' GAME_OVER 判定（MaxRounds/チップ枯渇）
+            ' GAME_OVER 判定
             If IsGameOver() Then
                 Dim winId As Integer = If(_state.Chips(1) > _state.Chips(2), 1, If(_state.Chips(2) > _state.Chips(1), 2, 0))
                 _state.Phase = GamePhase.GAMEOVER
@@ -269,6 +276,33 @@ Namespace Net
             _state.RoundIndex += 1
             _state.Phase = GamePhase.BETTING
             Broadcast($"{CommandNames.PHASE},{GamePhase.BETTING},{_state.RoundIndex}")
+        End Sub
+
+        Private Sub EnsureShoe()
+            ' シンプル運用：毎ラウンド冒頭で新規に山札を用意（DeckCount デック分）
+            If _state.Shoe Is Nothing OrElse _state.Shoe.Count < 6 Then
+                BuildAndShuffleShoe()
+            End If
+        End Sub
+
+        Private Sub BuildAndShuffleShoe()
+            _state.Shoe.Clear()
+            Dim deckCount = Baccarat.Shared.Constants.DeckCount
+            Dim suits As Char() = {"S"c, "H"c, "D"c, "C"c}
+            For d = 1 To deckCount
+                For Each s In suits
+                    For r = 1 To 13
+                        _state.Shoe.Add(New Card(s, r))
+                    Next
+                Next
+            Next
+            ' Shuffle
+            For i = _state.Shoe.Count - 1 To 1 Step -1
+                Dim j = _rng.Next(0, i + 1)
+                Dim tmp = _state.Shoe(i)
+                _state.Shoe(i) = _state.Shoe(j)
+                _state.Shoe(j) = tmp
+            Next
         End Sub
 
         Private Function IsGameOver() As Boolean
