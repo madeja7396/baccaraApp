@@ -26,8 +26,8 @@
 | ID | 優先度 | タスク | 対象 | 備考 |
 |---|---:|---|---|---|
 | T1-00 | P0 | DataReceiveEventArgs のプロパティ名確認 | Client/Server | **完了：`e.Data` を確認し `docs/exprement.md` へ反映** |
-| T1-01 | P0 | DataReceive での行フレーミング実装 | Client/Server | Server: `FormServer` 実装済、Client: 未着手 |
-| T1-02 | P0 | 送信メッセージへの `\n` 付与 | Client/Server | Server: 実装（`FormServer.SendMessage`）、Client: 未着手 |
+| T1-01 | P0 | DataReceive での行フレーミング実装 | Client/Server | Server: 実装済、Client: 実装中（`FormLobby`） |
+| T1-02 | P0 | 送信メッセージへの `\n` 付与 | Client/Server | Server: 実装済、Client: 実装中（HELLO送信に適用） |
 | T1-03 | P1 | パースエラー時の `ERROR` 返信 | Server | 未実装 |
 
 ---
@@ -35,9 +35,9 @@
 ## 2. 接続・HELLO/WELCOME (TC-001 / F-001～005)
 | ID | 優先度 | タスク | 対象 | 備考 |
 |---|---:|---|---|---|
-| T2-01 | P0 | Server: OpenAsServer / Accept / Disconnect ログ | Server | 概ね実装（ログ・受信） |
-| T2-02 | P0 | Client: OpenAsClient / Connect / Disconnect ログ | Client | 未着手 |
-| T2-03 | P0 | Client: HELLO,nickname 送信 | Client | 未着手 |
+| T2-01 | P0 | Server: OpenAsServer / Accept / Disconnect ログ | Server | 実装（ログ・受信） |
+| T2-02 | P0 | Client: OpenAsClient / Connect / Disconnect ログ | Client | 実装中（`FormLobby`） |
+| T2-03 | P0 | Client: HELLO,nickname 送信 | Client | 実装中（`FormLobby`） |
 | T2-04 | P0 | Server: nickname検証 / ERROR応答 | Server | 未実装（`ServerHost.HandleHello`） |
 | T2-05 | P0 | Server: WELCOME,playerId 送信 | Server | 未実装（`ServerHost.HandleHello`→`SendTo`） |
 
@@ -67,7 +67,7 @@
 ## 5. UI実装 (UI-001～)
 | ID | 優先度 | タスク | 対象 | 備考 |
 |---|---:|---|---|---|
-| T5-01 | P0 | Lobby: ニックネーム必須制御 | Client | 未着手 |
+| T5-01 | P0 | Lobby: ニックネーム必須制御 | Client | 実装済（最低限バリデーション） |
 | T5-02 | P1 | Lobby: IP形式チェック | Client | 未着手 |
 | T5-03 | P0 | Game: Phaseによる入力制御 | Client | 未着手 |
 | T5-04 | P0 | Game: ベット額 Min/Max/所持金制御 | Client | 未着手 |
