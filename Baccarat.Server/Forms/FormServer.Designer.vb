@@ -19,11 +19,19 @@ Namespace Forms
 
         <System.Diagnostics.DebuggerStepThrough()>
         Private Sub InitializeComponent()
+            Me.components = New System.ComponentModel.Container()
+            Me.TcpSockets1 = New Experiment.TcpSocket.TcpSockets(Me.components)
             Me.txtLog = New TextBox()
             Me.btnStart = New Button()
             Me.btnStop = New Button()
             Me.lblStatus = New Label()
             Me.SuspendLayout()
+            '
+            'TcpSockets1
+            '
+            Me.TcpSockets1.ReceiveBufferSize = 8192
+            Me.TcpSockets1.SendBufferSize = 8192
+            Me.TcpSockets1.SynchronizingObject = Me
             '
             'txtLog (サーバーログ表示用)
             '
@@ -82,5 +90,6 @@ Namespace Forms
         Friend WithEvents btnStart As Button
         Friend WithEvents btnStop As Button
         Friend WithEvents lblStatus As Label
+        Friend WithEvents TcpSockets1 As Experiment.TcpSocket.TcpSockets
     End Class
 End Namespace
