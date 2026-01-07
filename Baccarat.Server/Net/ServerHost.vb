@@ -24,12 +24,10 @@ Namespace Net
 
         Public Sub StartServer(port As Integer)
             _logger.Info($"Server start on {port}")
-            ' TODO: TcpSockets.OpenAsServer(port)
         End Sub
 
         Public Sub StopServer()
             _logger.Info("Server stop")
-            ' TODO: close sockets and cleanup
         End Sub
 
         Public Sub OnAccept(handle As Long)
@@ -37,7 +35,6 @@ Namespace Net
             If Not _clients.Contains(handle) Then
                 _clients.Add(handle)
             End If
-            ' TODO: enqueue until HELLO arrives
         End Sub
 
         Public Sub OnDisconnect(handle As Long)
@@ -45,7 +42,13 @@ Namespace Net
             If _clients.Contains(handle) Then
                 _clients.Remove(handle)
             End If
-            ' TODO: notify opponent & transition to GAMEOVER
+            ' detach from state.Clients if assigned
+            For i = 0 To _state.Clients.Length - 1
+                Dim ci = _state.Clients(i)
+                If ci IsNot Nothing AndAlso ci.Handle = handle Then
+                    _state.Clients(i) = Nothing
+                End If
+            Next
         End Sub
 
         Public Sub OnLineReceived(handle As Long, line As String)
@@ -53,6 +56,7 @@ Namespace Net
             Dim msg As Message = Nothing
             If Not Parser.TryParse(line, msg) Then
                 _logger.Error("Bad format")
+                SendTo(handle, $"{CommandNames.ERROR},BAD_FORMAT")
                 Return
             End If
 
@@ -62,11 +66,48 @@ Namespace Net
                 Case CommandNames.BET : HandleBet(handle, msg)
                 Case Else
                     _logger.Error($"Unsupported command {msg.Command}")
+                    SendTo(handle, $"{CommandNames.ERROR},UNSUPPORTED")
             End Select
         End Sub
 
         Private Sub HandleHello(handle As Long, msg As Message)
-            ' TODO: validate nickname and assign player id
+            Dim nickname As String = If(msg.Params IsNot Nothing AndAlso msg.Params.Length > 0, msg.Params(0), "")
+            If String.IsNullOrWhiteSpace(nickname) OrElse nickname.Length > Baccarat.Shared.Constants.NicknameMaxLen Then
+                SendTo(handle, $"{CommandNames.ERROR},INVALID_NAME")
+                Return
+            End If
+
+            ' already assigned?
+            For i = 0 To _state.Clients.Length - 1
+                Dim ci = _state.Clients(i)
+                If ci IsNot Nothing AndAlso ci.Handle = handle Then
+                    ' re-HELLO: refresh nickname
+                    ci.Nickname = nickname
+                    SendWelcome(handle, ci.PlayerId)
+                    Return
+                End If
+            Next
+
+            ' assign playerId 1..2
+            Dim pid As Integer = 0
+            If _state.Clients(0) Is Nothing Then
+                pid = 1
+                _state.Clients(0) = New ClientInfo With {.Handle = handle, .PlayerId = pid, .Nickname = nickname}
+            ElseIf _state.Clients(1) Is Nothing Then
+                pid = 2
+                _state.Clients(1) = New ClientInfo With {.Handle = handle, .PlayerId = pid, .Nickname = nickname}
+            Else
+                ' room full (予定)
+                SendTo(handle, $"{CommandNames.ERROR},ROOM_FULL")
+                Return
+            End If
+
+            SendWelcome(handle, pid)
+        End Sub
+
+        Private Sub SendWelcome(handle As Long, playerId As Integer)
+            Dim line = $"{CommandNames.WELCOME},{playerId},0,{Baccarat.Shared.Constants.MaxRounds},{Baccarat.Shared.Constants.InitChips}"
+            SendTo(handle, line)
         End Sub
 
         Private Sub HandleReady(handle As Long)
