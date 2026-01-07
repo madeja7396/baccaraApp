@@ -1,6 +1,6 @@
 # 要件定義書（厳格版）
 **対戦型バカラ（VB / Experiment.TcpSocket）**  
-作成日: 2025-12-24　版: **v1.2（HELLO/READY/BET/RESULT 実装反映）**
+作成日: 2025-12-24　版: **v1.3（GAME_OVER/ROOM_FULL 反映）**
 
 ---
 
@@ -209,15 +209,16 @@ UI要件は、操作可能タイミングを Phase によって厳格に制御�
 
 | CMD | 方向 | 形式 | 説明 |
 |---|---|---|---|
-| HELLO | C→S | HELLO,nickname | サーバが nickname を検証（空/長すぎは拒否）。満席時は `ERROR,ROOM_FULL`。|
+| HELLO | C→S | HELLO,nickname | サーバが nickname を検証（空/長すぎは拒否）。満席時は `ERROR,ROOM_FULL`（直後にクローズ）。|
 | WELCOME | S→C | WELCOME,playerId,seed,maxRounds,initChips | 受付応答。seedはプレースホルダ。|
 | READY | C→S | READY | 両者READYで `PHASE,BETTING,round` を両者に通知。|
-| PHASE | S→C | PHASE,phase,round | フェーズ遷移通知（BETTING/DEALING/RESULT）。|
+| PHASE | S→C | PHASE,phase,round | フェーズ遷移通知（BETTING/DEALING/RESULT/GAMEOVER）。|
 | BET | C→S | BET,playerId,target,amount または BET,target,amount | サーバは handle から playerId を特定するため、どちらの形式も許容。|
 | BET_ACK | S→C | BET_ACK,ok[,reason] | 受理時 `true`、拒否時 `false,reason`（PHASE_MISMATCH/BAD_ARGS/BAD_PLAYER/BAD_TARGET/BAD_AMOUNT/NO_CHIPS/ALREADY_LOCKED）。|
 | DEAL | S→C | DEAL | 配札完了通知（詳細表現は今後拡張）。|
 | ROUND_RESULT | S→C | ROUND_RESULT,winner,payoutP1,payoutP2,chipsP1,chipsP2 | 勝敗と配当、最新所持金。|
-| ERROR | S→C | ERROR,reason | BAD_FORMAT/UNSUPPORTED など。|
+| GAME_OVER | S→C | GAME_OVER,winPlayerId,chipsP1,chipsP2 | MaxRounds 到達またはチップ枯渇時。引き分けは `winPlayerId=0`。|
+| ERROR | S→C | ERROR,reason | BAD_FORMAT/UNSUPPORTED/INVALID_NAME/ROOM_FULL など。`ROOM_FULL` の場合は直後に切断。|
 
 ### 6.2 フェーズ遷移（確定した最小ルート）
 - LOBBY（初期）
@@ -227,14 +228,17 @@ UI要件は、操作可能タイミングを Phase によって厳格に制御�
 - DEALING
   - 配札/判定/配当後、RESULT
 - RESULT
-  - 直後に内部リセット（bets/ready）し Round を +1 し、BETTING(round+1) へ自動遷移
+  - GAME_OVER 条件（MaxRounds 到達 or チップ枯渇）なら `GAME_OVER` 送信して終了
+  - それ以外は内部リセット（bets/ready）し Round を +1、BETTING(round+1) へ自動遷移
 
 ---
 
 ## 8. 受入テスト（更新）
+- 正常系: 2クライアント→HELLO/WELCOME→両者READY→PHASE=BETTING→両者BET→DEALING→RESULT→（GAME_OVER or 次ラウンド）
 - 異常系: Phase外BET、金額不正、所持超過、重複BET は `BET_ACK,false,<reason>` を返すこと。
-- 形式不正や未対応コマンドに対し、`ERROR,BAD_FORMAT/UNSUPPORTED` を返すこと。
+- 形式不正/未対応コマンド: `ERROR,BAD_FORMAT/UNSUPPORTED`
+- 満席時: 3人目の接続は `ERROR,ROOM_FULL` 送信後にサーバ側でクローズされること。
 
 ---
 
-注意: DEAL の詳細表現（カード配列）はプレースホルダのまま。今後 `DEAL,playerCards...,bankerCards...` 形式に拡張予定。
+注意: DEAL の詳細表現（カード配列）はプレースホルダのまま。今後 `DEAL,playerCards...,bankerCards...` 形式へ拡張予定。

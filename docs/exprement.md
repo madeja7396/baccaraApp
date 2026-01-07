@@ -237,3 +237,9 @@
 
 補足: 文字コード UTF-8、行終端 LF 固定。受信は `e.Data`（Byte()）。
 
+---
+
+## 16. 追加スナップショット（v1.3）
+- 満席（2名）時の3人目: `ERROR,ROOM_FULL` を送信し、直後にソケットをクローズ（UIから注入した closeAction を使用）。
+- GAME_OVER: RESULT 後に MaxRounds 到達 or どちらかのチップ<=0 で `GAME_OVER,winId,chipsP1,chipsP2` を送信。
+
