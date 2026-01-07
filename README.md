@@ -3,7 +3,7 @@
 VB.NET (Windows Forms) で実装された、TCP通信による2人対戦型バカラアプリケーションです。
 サーバー権威型（Server Authority）でゲーム進行を管理し、2つのクライアントが接続して対戦します。
 
-> **最新ステータス**: v1.1 実装フェーズ (2026-01-06 更新)
+> **最新ステータス**: v1.1 実装フェーズ (2026-01-07 更新)
 
 ---
 
@@ -23,7 +23,10 @@ VB.NET (Windows Forms) で実装された、TCP通信による2人対戦型バ�
 ├── Baccarat.Client/      # クライアントプロジェクト
 ├── Baccarat.Shared/      # 共通ライブラリ
 ├── lib/                  # 外部DLL (Experiment.TcpSocket.dll)
-├── docs/                 # 詳細ドキュメント (要件、仕様)
+├── docs/                 # 詳細ドキュメント
+│   ├── CONTEXT.md        # 要件定義、仕様詳細
+│   ├── exprement.md      # Experiment.TcpSocket 仕様書 (堅牢版)
+│   └── ...
 ├── TASKS.md              # タスク一覧と優先度
 ├── PROGRESS.md           # 進捗レポート
 └── README.md             # 本ファイル
@@ -64,11 +67,16 @@ VB.NET (Windows Forms) で実装された、TCP通信による2人対戦型バ�
 - ツールボックスから `TcpSockets` コンポーネントをフォームに配置します。
 - プロパティ **`SynchronizingObject`** にフォーム自身 (`Me` / `FormServer`) を必ず設定してください。
   - これにより、`DataReceive` などのイベントが UIスレッドで安全に実行されます。
-- 通信メッセージは `Shared.Protocol` のパーサーを利用し、行単位 (`\n`) で処理します。
+- **行フレーミング**: 受信データは `Shared.Protocol.LineFramer` を使用して、改行コード (`\n`) 区切りで行単位に分割してから処理します。
+- **仕様書**: `Experiment.TcpSocket` の詳細仕様は [**docs/exprement.md**](./docs/exprement.md) を参照してください。
 
 ### 3. ゲーム進行 (Phase)
 - ゲーム状態は `Shared.Model.GamePhase` で定義されています (LOBBY, BETTING, DEALING, RESULT)。
 - クライアントはサーバーから送られる `PHASE` コマンドに従って画面制御 (`ApplyPhase` メソッド) を行います。勝手に状態を変更しないでください。
+
+### 4. サーバー実装 (ServerHost)
+- `Baccarat.Server.Net.ServerHost` は、UI (`FormServer`) から `sendAction` デリゲートを受け取り、通信機能を利用します (DIパターン)。
+- サーバーロジックは `ServerHost` に集約し、フォーム側はイベントの橋渡しとログ表示に徹してください。
 
 ---
 
@@ -77,6 +85,7 @@ VB.NET (Windows Forms) で実装された、TCP通信による2人対戦型バ�
 - [**TASKS.md**](./TASKS.md): 実装タスク一覧と優先度 (P0/P1)。開発はこれに従って進めます。
 - [**PROGRESS.md**](./PROGRESS.md): 日々の進捗レポート。
 - [**docs/CONTEXT.md**](./docs/CONTEXT.md): 要件定義、仕様詳細、プロトコル定義。
+- [**docs/exprement.md**](./docs/exprement.md): 通信ライブラリ仕様書。
 
 ---
 
