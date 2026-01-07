@@ -236,4 +236,8 @@ UI要件は、操作可能タイミングを Phase によって厳格に制御�
 
 ---
 
-注意: DEAL の詳細表現（カード配列）はプレースホルダのまま。今後 `DEAL,playerCards...,bankerCards...` 形式へ拡張予定。
+## 10.x 画像アセット（BMP）の取り扱い（合意事項）
+- 配置場所: `Baccarat.Client/assets/cards/*.bmp`（ビルド時に出力先へコピー）
+- 命名規則: `S-01.bmp` のように `Suit-Rank(2桁)`、裏面は `BACK.bmp`
+- 読み込み: `Baccarat.Client.UI.ImageLoader`（または今後のユーティリティ）を利用する
+- 注: 本リポジトリでは BMP は後日追加予定（現時点では存在しなくても起動可能）

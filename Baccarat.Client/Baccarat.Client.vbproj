@@ -33,6 +33,13 @@
     <Folder Include="assets\cards\" />
   </ItemGroup>
 
+  <!-- Copy BMP assets to output when present -->
+  <ItemGroup>
+    <Content Include="assets\cards\**\*.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="Experiment.TcpSocket">
       <HintPath>..\lib\Experiment.TcpSocket.dll</HintPath>
