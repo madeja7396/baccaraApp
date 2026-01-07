@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Client\\Baccarat.Client.vbproj": {}
+    "C:\\Users\\sana3\\baccaraApp\\Baccarat.Client\\Baccarat.Client.vbproj": {}
   },
   "projects": {
-    "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Client\\Baccarat.Client.vbproj": {
+    "C:\\Users\\sana3\\baccaraApp\\Baccarat.Client\\Baccarat.Client.vbproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Client\\Baccarat.Client.vbproj",
+        "projectUniqueName": "C:\\Users\\sana3\\baccaraApp\\Baccarat.Client\\Baccarat.Client.vbproj",
         "projectName": "Baccarat.Client",
-        "projectPath": "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Client\\Baccarat.Client.vbproj",
-        "packagesPath": "C:\\Users\\h1ra1\\.nuget\\packages\\",
-        "outputPath": "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Client\\obj\\",
+        "projectPath": "C:\\Users\\sana3\\baccaraApp\\Baccarat.Client\\Baccarat.Client.vbproj",
+        "packagesPath": "C:\\Users\\sana3\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\sana3\\baccaraApp\\Baccarat.Client\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\h1ra1\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\sana3\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -26,15 +22,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net10.0-windows7.0": {
             "targetAlias": "net10.0-windows",
             "projectReferences": {
-              "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Shared\\Baccarat.Shared.vbproj": {
-                "projectPath": "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Shared\\Baccarat.Shared.vbproj"
+              "C:\\Users\\sana3\\baccaraApp\\Baccarat.Shared\\Baccarat.Shared.vbproj": {
+                "projectPath": "C:\\Users\\sana3\\baccaraApp\\Baccarat.Shared\\Baccarat.Shared.vbproj"
               }
             }
           }
@@ -367,21 +362,17 @@
         }
       }
     },
-    "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Shared\\Baccarat.Shared.vbproj": {
+    "C:\\Users\\sana3\\baccaraApp\\Baccarat.Shared\\Baccarat.Shared.vbproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Shared\\Baccarat.Shared.vbproj",
+        "projectUniqueName": "C:\\Users\\sana3\\baccaraApp\\Baccarat.Shared\\Baccarat.Shared.vbproj",
         "projectName": "Baccarat.Shared",
-        "projectPath": "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Shared\\Baccarat.Shared.vbproj",
-        "packagesPath": "C:\\Users\\h1ra1\\.nuget\\packages\\",
-        "outputPath": "D:\\wsl\\Ubuntu\\gitclone\\baccaraApp\\Baccarat.Shared\\obj\\",
+        "projectPath": "C:\\Users\\sana3\\baccaraApp\\Baccarat.Shared\\Baccarat.Shared.vbproj",
+        "packagesPath": "C:\\Users\\sana3\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\sana3\\baccaraApp\\Baccarat.Shared\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\h1ra1\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\sana3\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -389,7 +380,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
