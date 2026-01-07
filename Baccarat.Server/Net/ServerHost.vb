@@ -111,7 +111,23 @@ Namespace Net
         End Sub
 
         Private Sub HandleReady(handle As Long)
-            ' TODO: set ready flag and maybe advance phase
+            ' set ready flag
+            For i = 0 To _state.Clients.Length - 1
+                Dim ci = _state.Clients(i)
+                If ci IsNot Nothing AndAlso ci.Handle = handle Then
+                    ci.IsReady = True
+                End If
+            Next
+
+            ' if both players ready, advance to BETTING and notify
+            Dim c1 = _state.Clients(0)
+            Dim c2 = _state.Clients(1)
+            If c1 IsNot Nothing AndAlso c2 IsNot Nothing AndAlso c1.IsReady AndAlso c2.IsReady Then
+                _state.Phase = GamePhase.BETTING
+                If _state.RoundIndex <= 0 Then _state.RoundIndex = 1
+                Dim line = $"{CommandNames.PHASE},{GamePhase.BETTING},{_state.RoundIndex}"
+                Broadcast(line)
+            End If
         End Sub
 
         Private Sub HandleBet(handle As Long, msg As Message)
