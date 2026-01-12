@@ -41,4 +41,14 @@ Namespace Protocol
         Public Const [ERROR] As String = "ERROR"
         Public Const BYE As String = "BYE"
     End Module
+
+    Public Module BetRejectReasons
+        Public Const PHASE_MISMATCH As String = "PHASE_MISMATCH"
+        Public Const BAD_ARGS As String = "BAD_ARGS"
+        Public Const BAD_PLAYER As String = "BAD_PLAYER"
+        Public Const BAD_TARGET As String = "BAD_TARGET"
+        Public Const BAD_AMOUNT As String = "BAD_AMOUNT"
+        Public Const NO_CHIPS As String = "NO_CHIPS"
+        Public Const ALREADY_LOCKED As String = "ALREADY_LOCKED"
+    End Module
 End Namespace
