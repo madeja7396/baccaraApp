@@ -5,7 +5,7 @@ Imports Baccarat.Shared.Protocol
 Imports System.Linq
 
 Namespace Rules
-    ' バカラ簡易ルール（段階1：簡略第三カード）
+    ' 初期段階の簡易ルール（第三カードなし）
     Public Class BaccaratRulesPlaceholder
         Implements IBaccaratRules
 
@@ -22,38 +22,7 @@ Namespace Rules
         End Sub
 
         Public Sub ApplyThirdCardRule(state As GameState) Implements IBaccaratRules.ApplyThirdCardRule
-            ' ===== 簡易第三カード規則（段階1）=====
-            ' プレイヤー: 初期スコア <= 5 なら3枚目を引く
-            ' バンカー:
-            '   - プレイヤーが3枚目を引かなかった場合: バンカースコア <= 5 で3枚目を引く
-            '   - プレイヤーが3枚目を引いた場合: 簡略版 → バンカースコア <= 6 で3枚目を引く
-            ' 注: 厳密なバカラルール（バンカー3枚目の判定はプレイヤーの3枚目カード値に依存）はPhase2以降
-
-            ' プレイヤーの3枚目判定
-            If state.PlayerHand.Cards.Count = 2 Then
-                Dim playerScore = ComputeScore(state.PlayerHand)
-                If playerScore <= 5 Then
-                    DrawToHand(state.Shoe, state.PlayerHand, 1)
-                End If
-            End If
-
-            ' バンカーの3枚目判定
-            If state.BankerHand.Cards.Count = 2 Then
-                Dim bankerScore = ComputeScore(state.BankerHand)
-                Dim drawBanker = False
-
-                If state.PlayerHand.Cards.Count = 2 Then
-                    ' プレイヤーが3枚目を引かなかった
-                    drawBanker = (bankerScore <= 5)
-                Else
-                    ' プレイヤーが3枚目を引いた（簡略版：バンカースコア <= 6）
-                    drawBanker = (bankerScore <= 6)
-                End If
-
-                If drawBanker Then
-                    DrawToHand(state.Shoe, state.BankerHand, 1)
-                End If
-            End If
+            ' TODO: add third-card rule in later sprint
         End Sub
 
         Public Function DetermineWinner(state As GameState) As Winner Implements IBaccaratRules.DetermineWinner

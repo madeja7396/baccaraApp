@@ -2,6 +2,7 @@ Imports Baccarat.Shared.Model
 Imports Baccarat.Shared.Protocol
 Imports Baccarat.Shared.Rules
 Imports Baccarat.Shared.Util
+Imports System.Threading
 
 Namespace Net
     ''' <summary>
@@ -29,19 +30,21 @@ Namespace Net
 
         Public Sub StartServer(port As Integer)
             _logger.Info($"Server start on {port}")
+            ResetState()
             BuildAndShuffleShoe()
         End Sub
 
         Public Sub StopServer()
             _logger.Info("Server stop")
+            ResetState()
         End Sub
 
         Public Sub OnAccept(handle As Long)
             _logger.Info($"Accept handle={handle}")
-            ' 満席（2名）なら拒否
+            ' 満席（2名）なら拒否（送信→少し待ってからクローズ）
             If _clients.Count >= 2 Then
                 SendTo(handle, $"{CommandNames.ERROR},ROOM_FULL")
-                If _closeAction IsNot Nothing Then _closeAction.Invoke(handle)
+                DeferClose(handle)
                 Return
             End If
             If Not _clients.Contains(handle) Then
@@ -68,7 +71,7 @@ Namespace Net
             Dim msg As Message = Nothing
             If Not Parser.TryParse(line, msg) Then
                 _logger.Error("Bad format")
-                SendTo(handle, $"{CommandNames.ERROR},{BetRejectReasons.BAD_ARGS}")
+                SendTo(handle, $"{CommandNames.ERROR},BAD_FORMAT")
                 Return
             End If
 
@@ -110,7 +113,7 @@ Namespace Net
                 _state.Clients(1) = New ClientInfo With {.Handle = handle, .PlayerId = pid, .Nickname = nickname}
             Else
                 SendTo(handle, $"{CommandNames.ERROR},ROOM_FULL")
-                If _closeAction IsNot Nothing Then _closeAction.Invoke(handle)
+                DeferClose(handle)
                 Return
             End If
 
@@ -145,15 +148,17 @@ Namespace Net
 
         Private Sub HandleBet(handle As Long, msg As Message)
             ' Check BET timeout
-            If _state.Phase = GamePhase.BETTING AndAlso DateTime.Now.Subtract(_betStartTime).TotalSeconds > BET_TIMEOUT_SEC Then
-                _logger.Info($"[TIMEOUT] BET phase exceeded {BET_TIMEOUT_SEC}s. Auto-settling...")
-                SettleRound()
-                Return
+            If _state.Phase = GamePhase.BETTING AndAlso _betStartTime <> DateTime.MinValue Then
+                If DateTime.Now.Subtract(_betStartTime).TotalSeconds > BET_TIMEOUT_SEC Then
+                    _logger.Info($"[TIMEOUT] BET phase exceeded {BET_TIMEOUT_SEC}s. Auto-settling...")
+                    SettleRound()
+                    Return
+                End If
             End If
 
             ' Validate phase
             If _state.Phase <> GamePhase.BETTING Then
-                SendTo(handle, $"{CommandNames.BET_ACK},false,{BetRejectReasons.PHASE_MISMATCH}")
+                SendTo(handle, $"{CommandNames.BET_ACK},false,PHASE_MISMATCH")
                 Return
             End If
 
@@ -163,14 +168,14 @@ Namespace Net
             Dim amountStr As String = Nothing
 
             If msg.Params Is Nothing OrElse msg.Params.Length < 2 Then
-                SendTo(handle, $"{CommandNames.BET_ACK},false,{BetRejectReasons.BAD_ARGS}")
+                SendTo(handle, $"{CommandNames.BET_ACK},false,BAD_ARGS")
                 Return
             End If
 
             If msg.Params.Length = 3 Then
                 ' playerId,target,amount
                 If Not Integer.TryParse(msg.Params(0), pId) Then
-                    SendTo(handle, $"{CommandNames.BET_ACK},false,{BetRejectReasons.BAD_PLAYER}")
+                    SendTo(handle, $"{CommandNames.BET_ACK},false,BAD_PLAYER")
                     Return
                 End If
                 targetStr = msg.Params(1)
@@ -179,12 +184,12 @@ Namespace Net
                 targetStr = msg.Params(0)
                 amountStr = msg.Params(1)
             Else
-                SendTo(handle, $"{CommandNames.BET_ACK},false,{BetRejectReasons.BAD_ARGS}")
+                SendTo(handle, $"{CommandNames.BET_ACK},false,BAD_ARGS")
                 Return
             End If
 
             If pId <> 1 AndAlso pId <> 2 Then
-                SendTo(handle, $"{CommandNames.BET_ACK},false,{BetRejectReasons.BAD_PLAYER}")
+                SendTo(handle, $"{CommandNames.BET_ACK},false,BAD_PLAYER")
                 Return
             End If
 
@@ -194,26 +199,26 @@ Namespace Net
                 Case "BANKER" : target = BetTarget.Banker
                 Case "TIE" : target = BetTarget.Tie
                 Case Else
-                    SendTo(handle, $"{CommandNames.BET_ACK},false,{BetRejectReasons.BAD_TARGET}")
+                    SendTo(handle, $"{CommandNames.BET_ACK},false,BAD_TARGET")
                     Return
             End Select
 
             Dim amount As Integer
             If Not Integer.TryParse(amountStr, amount) OrElse amount <= 0 Then
-                SendTo(handle, $"{CommandNames.BET_ACK},false,{BetRejectReasons.BAD_AMOUNT}")
+                SendTo(handle, $"{CommandNames.BET_ACK},false,BAD_AMOUNT")
                 Return
             End If
 
             Dim chips As Integer = 0
             If Not _state.Chips.TryGetValue(pId, chips) OrElse amount > chips Then
-                SendTo(handle, $"{CommandNames.BET_ACK},false,{BetRejectReasons.NO_CHIPS}")
+                SendTo(handle, $"{CommandNames.BET_ACK},false,NO_CHIPS")
                 Return
             End If
 
             ' Prevent re-bet
             Dim existing As BetInfo = Nothing
             If _state.Bets.TryGetValue(pId, existing) AndAlso existing IsNot Nothing AndAlso existing.Locked Then
-                SendTo(handle, $"{CommandNames.BET_ACK},false,{BetRejectReasons.ALREADY_LOCKED}")
+                SendTo(handle, $"{CommandNames.BET_ACK},false,ALREADY_LOCKED")
                 Return
             End If
 
@@ -285,6 +290,7 @@ Namespace Net
             Next
             _state.RoundIndex += 1
             _state.Phase = GamePhase.BETTING
+            _betStartTime = DateTime.Now
             Broadcast($"{CommandNames.PHASE},{GamePhase.BETTING},{_state.RoundIndex}")
         End Sub
 
@@ -349,6 +355,31 @@ Namespace Net
             For Each h In _clients.ToArray()
                 SendTo(h, message)
             Next
+        End Sub
+
+        Private Sub DeferClose(handle As Long)
+            If _closeAction Is Nothing Then Return
+            ThreadPool.QueueUserWorkItem(Sub(state As Object)
+                                             Try
+                                                 Thread.Sleep(50)
+                                                 _closeAction.Invoke(handle)
+                                             Catch
+                                             End Try
+                                         End Sub)
+        End Sub
+
+        Private Sub ResetState()
+            _clients.Clear()
+            _state.Phase = GamePhase.LOBBY
+            _state.RoundIndex = 1
+            _state.Clients = New ClientInfo() {Nothing, Nothing}
+            _state.Bets.Clear()
+            _state.PlayerHand = New Hand()
+            _state.BankerHand = New Hand()
+            _state.Shoe.Clear()
+            _state.Chips(1) = Baccarat.Shared.Constants.InitChips
+            _state.Chips(2) = Baccarat.Shared.Constants.InitChips
+            _betStartTime = DateTime.MinValue
         End Sub
 
     End Class
