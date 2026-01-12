@@ -40,6 +40,11 @@
   - `ROOM_FULL` は `SendTo` 後に 50ms 遅延クローズ（`ThreadPool.QueueUserWorkItem`）
   - BETTING 開始時に `_betStartTime` を更新（タイムアウト判定の安定化）
 
+## 追記（FormLobby.resources の MSB3577 再発と最終解決）
+- 再発内容: `Baccarat.Client.Forms.FormLobby.resources` の二重生成
+- 原因: `FormLobby.resx` と `FormLobby.Comms.resx` が同時に存在し、同一出力に解決された
+- 最終対応: `Baccarat.Client/Forms/FormLobby.Comms.resx` を削除し、ビルド成功を確認
+
 ## 再発防止
 - Designer 以外の Partial に `.resx` を付与しない運用（ファイル追加時に確認）
 - Partial クラス分割時は、フィールドの単一出所（Single Source）を徹底
