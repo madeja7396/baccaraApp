@@ -1,0 +1,46 @@
+' FormLobby.Comms.vb に以下を追加
+
+' === フィールド追加 ===
+Private _gameForm As FormGame
+
+' === WELCOME ケースを以下に変更 ===
+Case CommandNames.WELCOME
+    If parts.Length >= 5 Then
+        Integer.TryParse(parts(1), _gameState.PlayerId)
+        Integer.TryParse(parts(3), _gameState.MaxRounds)
+        Integer.TryParse(parts(4), _gameState.ChipsP1)
+        _gameState.ChipsP2 = _gameState.ChipsP1
+        UiLog($"[WELCOME] playerId={_gameState.PlayerId}")
+        
+        ' Show FormGame
+        ShowGameForm()
+        
+        ' Auto READY
+        SendLine(CommandNames.READY)
+        UiLog("[SEND] READY (auto)")
+    End If
+
+' === PHASE ケースの最後に追加 ===
+' ... (existing phase parsing) ...
+UiLog($"[PHASE] {_gameState.Phase}, round={_gameState.RoundIndex}")
+UpdateGameForm()
+
+' === ROUND_RESULT ケースの最後に追加 ===
+' ... (existing payout parsing) ...
+UiLog($"[RESULT] Winner={parts(1)}, Chips P1={_gameState.ChipsP1}, P2={_gameState.ChipsP2}")
+UpdateGameForm()
+
+' === ヘルパーメソッドを追加 ===
+Private Sub ShowGameForm()
+    If _gameForm Is Nothing OrElse _gameForm.IsDisposed Then
+        _gameForm = New FormGame(_gameState, AddressOf SendLine)
+        _gameForm.Show()
+    End If
+End Sub
+
+Private Sub UpdateGameForm()
+    If _gameForm IsNot Nothing AndAlso Not _gameForm.IsDisposed Then
+        _gameForm.ApplyPhase(_gameState.Phase)
+        _gameForm.UpdateHeader()
+    End If
+End Sub
