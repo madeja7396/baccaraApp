@@ -28,8 +28,6 @@ Namespace Forms
             lblStatus = New Label()
             Label1 = New Label()
             btnDisconnect = New Button()
-
-
             SuspendLayout()
             ' 
             ' txtIp
@@ -118,7 +116,7 @@ Namespace Forms
             ' 
             ' FormLobby
             ' 
-            AutoScaleDimensions = New SizeF(10F, 25F)
+            AutoScaleDimensions = New SizeF(10.0F, 25.0F)
             AutoScaleMode = AutoScaleMode.Font
             ClientSize = New Size(438, 480)
             Controls.Add(btnDisconnect)
@@ -146,7 +144,6 @@ Namespace Forms
         Friend WithEvents lblStatus As Label
         Friend WithEvents Label1 As Label
         Friend WithEvents btnDisconnect As Button
-        Friend WithEvents tcp As Experiment.TcpSocket.TcpSockets
 
     End Class
 End Namespace

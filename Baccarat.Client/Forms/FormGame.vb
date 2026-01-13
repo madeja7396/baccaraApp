@@ -5,6 +5,10 @@ Imports Experiment.TcpSocket
 Imports Baccarat.Shared.Protocol
 Imports Baccarat.Shared.Util
 Imports Baccarat.Client.Util
+Imports System.Collections.Generic
+Imports System.IO
+Imports System.Drawing
+
 
 Namespace Forms
     ''' <summary>
@@ -36,282 +40,304 @@ Namespace Forms
 
 
     Public Class FormGame
-        Inherits Form
+        Inherits System.Windows.Forms.Form
 
-        Private _logger As Logger
-        Private _phase As GamePhase = GamePhase.LOBBY
+        Private ReadOnly _tcp As TcpSockets
+        Private ReadOnly _handle As Long
+        Private ReadOnly _nick As String
 
-        Private _tcp As TcpSockets
-        Private _handle As Long
-        Private _nickname As String
+        Private ReadOnly _rx As New StringBuilder()
+        Private ReadOnly _imgCache As New Dictionary(Of String, Image)(StringComparer.OrdinalIgnoreCase)
 
-        ' ベット状態（最低限）
-        Private _betTarget As String = "PLAYER"   ' PLAYER / BANKER / TIE
-        Private _betAmount As Integer = 100       ' とりあえず固定
+        ' 表示用状態（サーバから来た内容を反映）
+        Private _round As Integer = 0
+        Private _chips As Integer = 1000
+        Private _phase As String = "WAITING"
 
-        ' 受信バッファ（分割受信対策）
-        Private _rxBuf As String = ""
-
+        ' ---- コンストラクタ：Lobbyから tcp/handle を受け取る ----
         Public Sub New(tcp As TcpSockets, handle As Long, nickname As String)
             InitializeComponent()
-            _logger = New Logger(AddressOf AppendLog)
-
             _tcp = tcp
             _handle = handle
-            _nickname = nickname
+            _nick = nickname
+        End Sub
 
+        Private Sub FormGame_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            ' サーバ受信イベント（重要）
             AddHandler _tcp.DataReceive, AddressOf Tcp_DataReceive
             AddHandler _tcp.Disconnect, AddressOf Tcp_Disconnect
 
-            ApplyPhase(GamePhase.LOBBY)
-            SetTextIfExists("lblPhase", "Phase: WAITING")
-            SetTextIfExists("lblRound", "Round: 0")
-            SetTextIfExists("lblChips", "Chips: 1000")
+            ' UI初期化
+            rbPlayer.Checked = True
+            nudBet.Minimum = 10
+            nudBet.Maximum = 10000
+            nudBet.Increment = 10
+            If nudBet.Value < 100 Then nudBet.Value = 100
 
-            AppendLog("Game 起動: " & _nickname)
+            lblBetInfo.Text = "選択: -"
+            lblResult.Text = "結果: -"
+
+            pnlPlayer.Controls.Clear()
+            pnlBanker.Controls.Clear()
+
+            ApplyHeader()
+
+            AppendLog("Game start: " & _nick)
+
+            ' サーバへ：HELLOはLobbyで送っているはずだが、二重送信しても害が少ない
+            SendLine($"HELLO,{_nick}")
+
+            ' サーバへ：準備完了（ServerHost側が READY を期待している想定）
+            SendLine("READY")
         End Sub
 
-        '==============================
-        ' Phase制御（UIの有効/無効）
-        '==============================
-        Public Sub ApplyPhase(p As GamePhase)
-            _phase = p
+        Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
+            MyBase.OnFormClosed(e)
 
-            SetEnabledIfExists("grpBet", (p = GamePhase.BETTING))
-            SetEnabledIfExists("btnNext", (p = GamePhase.RESULT))
-            SetEnabledIfExists("btnRules", True)
-
-            ' 表示
-            SetTextIfExists("lblPhase", "Phase: " & p.ToString())
-        End Sub
-
-        '==============================
-        ' ボタン（ベット選択）
-        '  ※ デザイナにボタンが無くてもコンパイルは通るように
-        '==============================
-        Private Sub btnBetPlayer_Click(sender As Object, e As EventArgs)
-            _betTarget = "PLAYER"
-            AppendLog("BetTarget=PLAYER")
-        End Sub
-
-        Private Sub btnBetBanker_Click(sender As Object, e As EventArgs)
-            _betTarget = "BANKER"
-            AppendLog("BetTarget=BANKER")
-        End Sub
-
-        Private Sub btnBetTie_Click(sender As Object, e As EventArgs)
-            _betTarget = "TIE"
-            AppendLog("BetTarget=TIE")
-        End Sub
-
-        Private Sub btnBetLock_Click(sender As Object, e As EventArgs)
-            If _phase <> GamePhase.BETTING Then
-                AppendLog("BETTINGフェーズではないためベットできません")
-                Return
-            End If
-
-            ' 送信形式（サーバ側仕様に合わせて必要なら変更）
-            ' 例: BET,<nickname>,<target>,<amount>
-            SendLine($"BET,{_nickname},{_betTarget},{_betAmount}")
-            AppendLog($"送信: BET {_betTarget} {_betAmount}")
-        End Sub
-
-        Private Sub btnNext_Click(sender As Object, e As EventArgs)
-            ' 例: NEXT,<nickname>
-            SendLine($"NEXT,{_nickname}")
-            AppendLog("送信: NEXT")
-        End Sub
-
-        Private Sub btnRules_Click(sender As Object, e As EventArgs)
-            Dim rules As New FormRules()
-            rules.Show()
-        End Sub
-
-        '==============================
-        ' 送信
-        '==============================
-        Private Sub SendLine(line As String)
-            Dim bytes = Encoding.UTF8.GetBytes(line & vbLf)
-            _tcp.Send(_handle, bytes)
-        End Sub
-
-        '==============================
-        ' 受信
-        '==============================
-        Private Sub Tcp_DataReceive(sender As Object, e As DataReceiveEventArgs)
-            Dim chunk = Encoding.UTF8.GetString(e.Data)
-            _rxBuf &= chunk
-
-            ' 改行区切りで処理
-            Dim lines = _rxBuf.Split(New String() {vbLf}, StringSplitOptions.None)
-            _rxBuf = lines.Last() ' 最後は未完の可能性があるのでバッファへ
-
-            For i As Integer = 0 To lines.Length - 2
-                Dim line = lines(i).Trim()
-                If line <> "" Then
-                    HandleLine(line)
-                End If
-            Next
-        End Sub
-
-        Private Sub Tcp_Disconnect(sender As Object, e As DisconnectEventArgs)
-            AppendLog("切断されました")
-            ApplyPhase(GamePhase.LOBBY)
-        End Sub
-
-        '==============================
-        ' プロトコル処理（ここがゲームの中心）
-        '==============================
-        Private Sub HandleLine(line As String)
-            AppendLog("受信: " & line)
-
-            ' 想定メッセージ例（必要に応じてサーバに合わせて変更）
-            ' PHASE,BETTING,0
-            ' PHASE,DEALING,0
-            ' PHASE,RESULT,0
-            ' CHIPS,1000
-            ' CARDS,P,00_00,01_01,02_02  （Playerのカード）
-            ' CARDS,B,03_03,04_00        （Bankerのカード）
-            ' SCORE,5,7
-            ' RESULT,BANKER
-
-            Dim parts = line.Split(","c)
-            If parts.Length = 0 Then Return
-
-            Select Case parts(0)
-
-                Case "PHASE"
-                    If parts.Length >= 2 Then
-                        Dim pStr = parts(1).Trim()
-                        If pStr = "BETTING" Then ApplyPhase(GamePhase.BETTING)
-                        If pStr = "DEALING" Then ApplyPhase(GamePhase.DEALING)
-                        If pStr = "RESULT" Then ApplyPhase(GamePhase.RESULT)
-                        If parts.Length >= 3 Then SetTextIfExists("lblRound", "Round: " & parts(2).Trim())
-                    End If
-
-                Case "CHIPS"
-                    If parts.Length >= 2 Then
-                        SetTextIfExists("lblChips", "Chips: " & parts(1).Trim())
-                    End If
-
-                Case "CARDS"
-                    If parts.Length >= 3 Then
-                        Dim side = parts(1).Trim() ' P or B
-                        Dim cards = parts.Skip(2).Where(Function(x) x.Trim() <> "").ToArray()
-
-                        If side = "P" Then
-                            ShowCardsPlayer(cards)
-                            SetTextIfExists("lblPlayerScore", "Player Score: " & CalcScore(cards))
-                        ElseIf side = "B" Then
-                            ShowCardsBanker(cards)
-                            SetTextIfExists("lblBankerScore", "Banker Score: " & CalcScore(cards))
-                        End If
-                    End If
-
-                Case "SCORE"
-                    If parts.Length >= 3 Then
-                        SetTextIfExists("lblPlayerScore", "Player Score: " & parts(1).Trim())
-                        SetTextIfExists("lblBankerScore", "Banker Score: " & parts(2).Trim())
-                    End If
-
-                Case "RESULT"
-                    If parts.Length >= 2 Then
-                        AppendLog("勝者: " & parts(1).Trim())
-                    End If
-
-            End Select
-        End Sub
-
-        '==============================
-        ' スコア計算
-        '==============================
-        Private Function CalcScore(cards As String()) As Integer
-            Dim sum As Integer = 0
-            For Each c In cards
-                sum += BaccaratPoint(c.Trim())
-            Next
-            Return sum Mod 10
-        End Function
-
-        '==============================
-        ' カード表示（PictureBox名が無い場合でも落ちない）
-        ' 期待する名前: picPlayer1/2/3, picBanker1/2/3
-        '==============================
-        Private Sub ShowCardsPlayer(cards As String())
-            SetCardIfExists("picPlayer1", If(cards.Length >= 1, cards(0), Nothing))
-            SetCardIfExists("picPlayer2", If(cards.Length >= 2, cards(1), Nothing))
-            SetCardIfExists("picPlayer3", If(cards.Length >= 3, cards(2), Nothing))
-        End Sub
-
-        Private Sub ShowCardsBanker(cards As String())
-            SetCardIfExists("picBanker1", If(cards.Length >= 1, cards(0), Nothing))
-            SetCardIfExists("picBanker2", If(cards.Length >= 2, cards(1), Nothing))
-            SetCardIfExists("picBanker3", If(cards.Length >= 3, cards(2), Nothing))
-        End Sub
-
-        Private Sub SetCardIfExists(ctrlName As String, cardId As String)
-            Dim pb = TryCast(Me.Controls.Find(ctrlName, True).FirstOrDefault(), PictureBox)
-            If pb Is Nothing Then Return
-
-            If String.IsNullOrWhiteSpace(cardId) Then
-                pb.Image = Nothing
-                Return
-            End If
-
+            ' イベント解除（多重購読防止）
             Try
-                pb.SizeMode = PictureBoxSizeMode.Zoom
-                pb.Image = LoadCardImage(cardId)
-            Catch ex As Exception
-                AppendLog($"画像読み込み失敗({ctrlName}): {cardId} / {ex.Message}")
+                RemoveHandler _tcp.DataReceive, AddressOf Tcp_DataReceive
+                RemoveHandler _tcp.Disconnect, AddressOf Tcp_Disconnect
+            Catch
             End Try
         End Sub
 
-        '==============================
-        ' 汎用UI操作
-        '==============================
-        Private Sub SetTextIfExists(ctrlName As String, text As String)
-            Dim c = Me.Controls.Find(ctrlName, True).FirstOrDefault()
-            Dim lbl = TryCast(c, Label)
-            If lbl IsNot Nothing Then lbl.Text = text
+        ' -----------------------------
+        ' UI
+        ' -----------------------------
+        Private Sub ApplyHeader()
+            lblPhase.Text = $"Phase: {_phase}"
+            lblRound.Text = $"Round: {_round}"
+            lblChips.Text = $"Chips: {_chips}"
         End Sub
 
-        Private Sub SetEnabledIfExists(ctrlName As String, enabled As Boolean)
-            Dim c = Me.Controls.Find(ctrlName, True).FirstOrDefault()
-            If c IsNot Nothing Then c.Enabled = enabled
-        End Sub
-
-        '==============================
-        ' ログ
-        '==============================
         Private Sub AppendLog(line As String)
-            Dim tb = TryCast(Me.Controls.Find("txtLog", True).FirstOrDefault(), TextBox)
-            If tb Is Nothing Then Return
+            If InvokeRequired Then
+                Invoke(New Action(Of String)(AddressOf AppendLog), line)
+                Return
+            End If
+            txtLog.AppendText($"{DateTime.Now:HH:mm:ss} {line}{Environment.NewLine}")
+        End Sub
 
-            If tb.InvokeRequired Then
-                tb.Invoke(Sub() AppendLog(line))
+        Private Function SelectedTargetChar() As String
+            If rbBanker.Checked Then Return "B"
+            If rbTie.Checked Then Return "T"
+            Return "P"
+        End Function
+
+        Private Sub UpdateBetInfo()
+            Dim t = SelectedTargetChar()
+            lblBetInfo.Text = $"選択: {t} / Bet: {CInt(nudBet.Value)}"
+        End Sub
+
+        Private Sub rbPlayer_CheckedChanged(sender As Object, e As EventArgs) Handles rbPlayer.CheckedChanged
+            UpdateBetInfo()
+        End Sub
+        Private Sub rbBanker_CheckedChanged(sender As Object, e As EventArgs) Handles rbBanker.CheckedChanged
+            UpdateBetInfo()
+        End Sub
+        Private Sub rbTie_CheckedChanged(sender As Object, e As EventArgs) Handles rbTie.CheckedChanged
+            UpdateBetInfo()
+        End Sub
+        Private Sub nudBet_ValueChanged(sender As Object, e As EventArgs) Handles nudBet.ValueChanged
+            UpdateBetInfo()
+        End Sub
+
+        ' -----------------------------
+        ' Buttons
+        ' -----------------------------
+        Private Sub btnBet_Click(sender As Object, e As EventArgs) Handles btnBet.Click
+            Dim t = SelectedTargetChar()
+            Dim amt = CInt(nudBet.Value)
+
+            ' ServerHostが理解するBETを送る（既にあなたがHELLO形式で進めているのでこの形式を維持）
+            SendLine($"BET,{t},{amt}")
+            AppendLog($"Bet sent: {t} {amt}")
+        End Sub
+
+        Private Sub btnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
+            ' 次ラウンド/配る要求
+            SendLine("DEAL")
+            AppendLog("Deal requested")
+        End Sub
+
+        Private Sub btnRules_Click(sender As Object, e As EventArgs) Handles btnRules.Click
+            Try
+                Dim f As New FormRules()
+                f.Show()
+            Catch
+                MessageBox.Show("FormRules が見つかりません。", "Rules")
+            End Try
+        End Sub
+
+        ' -----------------------------
+        ' Network Send/Receive
+        ' -----------------------------
+        Private Sub SendLine(line As String)
+            Dim msg = line & vbLf
+            Dim bytes = Encoding.UTF8.GetBytes(msg)
+            _tcp.Send(_handle, bytes)
+        End Sub
+
+        Private Sub Tcp_Disconnect(sender As Object, e As DisconnectEventArgs)
+            AppendLog("Disconnected from server.")
+        End Sub
+
+        Private Sub Tcp_DataReceive(sender As Object, e As DataReceiveEventArgs)
+            Dim text = Encoding.UTF8.GetString(e.Data)
+
+            If InvokeRequired Then
+                Invoke(New Action(Of String)(AddressOf RxAppend), text)
             Else
-                tb.AppendText($"{DateTime.Now:HH:mm:ss} {line}{Environment.NewLine}")
+                RxAppend(text)
             End If
         End Sub
 
-        Private ReadOnly Property IsDesigner As Boolean
-            Get
-                Return System.ComponentModel.LicenseManager.UsageMode =
-               System.ComponentModel.LicenseUsageMode.Designtime
-            End Get
-        End Property
+        Private Sub RxAppend(text As String)
+            _rx.Append(text)
 
-        Private Sub FormGame_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Dim bufStr = _rx.ToString()
+            Dim lines = bufStr.Split({vbLf}, StringSplitOptions.None)
 
+            _rx.Clear()
+            If Not bufStr.EndsWith(vbLf) Then
+                _rx.Append(lines.Last())
+                lines = lines.Take(lines.Length - 1).ToArray()
+            Else
+                lines = lines.Take(lines.Length - 1).ToArray()
+            End If
+
+            For Each raw In lines
+                Dim line = raw.Trim()
+                If line.Length = 0 Then Continue For
+                AppendLog("[RCV] " & line)
+                HandleServerLine(line)
+            Next
         End Sub
 
-        Private Sub pnlPlayer_Paint(sender As Object, e As PaintEventArgs) Handles pnlPlayer.Paint
+        ' -----------------------------
+        ' Server → UI 反映
+        ' ここは「サーバが送ってくる行」に合わせて増やせる
+        ' -----------------------------
+        Private Sub HandleServerLine(line As String)
+            Dim parts = line.Split(","c)
+            Dim cmd = parts(0).Trim().ToUpperInvariant()
 
+            Select Case cmd
+
+                Case "STATE"
+                    ' STATE,<round>,<chips>,<phase>
+                    If parts.Length >= 4 Then
+                        Integer.TryParse(parts(1), _round)
+                        Integer.TryParse(parts(2), _chips)
+                        _phase = parts(3).Trim()
+                        ApplyHeader()
+
+                        ' フェーズに応じて操作可否
+                        grpBet.Enabled = (_phase = "BETTING")
+                        btnNext.Enabled = (_phase = "BETTING" OrElse _phase = "RESULT")
+                    End If
+
+                Case "CARDS"
+                    ' CARDS,P:00_00|01_00|..,B:00_01|..
+                    ParseAndRenderCards(line)
+
+                Case "SCORE"
+                    ' SCORE,<pScore>,<bScore>
+                    If parts.Length >= 3 Then
+                        lblPlayerScore.Text = $"Player Score: {parts(1).Trim()}"
+                        lblBankerScore.Text = $"Banker Score: {parts(2).Trim()}"
+                    End If
+
+                Case "RESULT"
+                    ' RESULT,<winner>,<delta>,<chips>
+                    If parts.Length >= 4 Then
+                        Dim w = parts(1).Trim()
+                        Dim delta = parts(2).Trim()
+                        Dim chipsStr = parts(3).Trim()
+                        lblResult.Text = $"結果: {w} / 収支: {delta}"
+                        Integer.TryParse(chipsStr, _chips)
+                        ApplyHeader()
+                    End If
+
+                Case Else
+                    ' 未対応メッセージはログだけ（ServerHostの実装に合わせてここを増やす）
+            End Select
         End Sub
 
-        Private Sub grpBet_Enter(sender As Object, e As EventArgs) Handles grpBet.Enter
+        Private Sub ParseAndRenderCards(fullLine As String)
+            Dim pPart As String = ""
+            Dim bPart As String = ""
 
+            Dim rest = fullLine.Substring(5).Trim() ' "CARDS"分
+            If rest.StartsWith(","c) Then rest = rest.Substring(1).Trim()
+
+            Dim segs = rest.Split(","c)
+            For Each seg In segs
+                Dim t = seg.Trim()
+                If t.StartsWith("P:", StringComparison.OrdinalIgnoreCase) Then pPart = t.Substring(2)
+                If t.StartsWith("B:", StringComparison.OrdinalIgnoreCase) Then bPart = t.Substring(2)
+            Next
+
+            RenderPanelCards(pnlPlayer, pPart)
+            RenderPanelCards(pnlBanker, bPart)
         End Sub
+
+        Private Sub RenderPanelCards(panel As Panel, payload As String)
+            panel.Controls.Clear()
+
+            If String.IsNullOrWhiteSpace(payload) Then Return
+            Dim items = payload.Split("|"c).Where(Function(s) Not String.IsNullOrWhiteSpace(s)).ToArray()
+
+            Dim x As Integer = 10
+            Dim y As Integer = 10
+            Dim w As Integer = 120
+            Dim h As Integer = 180
+            Dim gap As Integer = 10
+
+            For i As Integer = 0 To items.Length - 1
+                Dim code = items(i).Trim() ' "00_00"
+                Dim pb As New PictureBox() With {
+                    .Left = x + i * (w + gap),
+                    .Top = y,
+                    .Width = w,
+                    .Height = h,
+                    .SizeMode = PictureBoxSizeMode.Zoom,
+                    .BorderStyle = BorderStyle.FixedSingle
+                }
+
+                Dim img = LoadCardImage(code)
+                If img IsNot Nothing Then pb.Image = img
+
+                panel.Controls.Add(pb)
+            Next
+        End Sub
+
+        ' assets/cards/00_00.bmp を読む
+        Private Function LoadCardImage(code As String) As Image
+            Dim fileName = code & ".bmp"
+            If _imgCache.ContainsKey(fileName) Then Return _imgCache(fileName)
+
+            Dim baseDir = AppDomain.CurrentDomain.BaseDirectory
+            Dim path1 = Path.Combine(baseDir, "assets", "cards", fileName)
+            Dim path2 = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "assets", "cards", fileName))
+
+            Dim found As String = Nothing
+            If File.Exists(path1) Then found = path1
+            If found Is Nothing AndAlso File.Exists(path2) Then found = path2
+
+            If found Is Nothing Then
+                AppendLog($"[WARN] image not found: {fileName}")
+                Return Nothing
+            End If
+
+            Using fs As New FileStream(found, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+                Dim img = Image.FromStream(fs)
+                Dim clone As New Bitmap(img)
+                _imgCache(fileName) = clone
+                Return clone
+            End Using
+        End Function
 
     End Class
 

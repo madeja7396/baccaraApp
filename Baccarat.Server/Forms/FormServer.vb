@@ -67,16 +67,18 @@ Namespace Forms
         End Sub
 
         Private Sub OnAccept(sender As Object, e As AcceptEventArgs)
-            AppendLog($"[ACCEPT] ClientHandle={e.ClientHandle}, Remote={e.RemoteEndPoint}")
+            Dim handle As Long = e.ClientHandle
+            AppendLog($"[ACCEPT] ClientHandle={handle}, Remote={e.RemoteEndPoint}")
 
             Dim framer As New LineFramer()
             AddHandler framer.LineReceived, Sub(line)
-                                                _host.OnLineReceived(e.ClientHandle, line)
+                                                _host.OnLineReceived(handle, line)
                                             End Sub
-            _framers(e.ClientHandle) = framer
+            _framers(handle) = framer
 
-            _host.OnAccept(e.ClientHandle)
+            _host.OnAccept(handle)
         End Sub
+
 
         Private Sub OnDisconnect(sender As Object, e As DisconnectEventArgs)
             AppendLog($"[DISCONNECT] Handle={e.Handle}")
