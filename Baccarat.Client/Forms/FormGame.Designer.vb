@@ -19,133 +19,146 @@ Namespace Forms
 
         <System.Diagnostics.DebuggerStepThrough()>
         Private Sub InitializeComponent()
-            Me.lblPhase = New Label()
-            Me.lblRound = New Label()
-            Me.grpBet = New GroupBox()
-            Me.btnNext = New Button()
-            Me.btnRules = New Button()
-            Me.pnlPlayer = New Panel()
-            Me.pnlBanker = New Panel()
-            Me.lblPlayerScore = New Label()
-            Me.lblBankerScore = New Label()
-            Me.lblChips = New Label()
-            Me.txtLog = New TextBox()
-            Me.SuspendLayout()
-            '
-            'lblPhase (現在のフェーズ表示)
-            '
-            Me.lblPhase.Font = New Drawing.Font("Segoe UI", 12.0!, Drawing.FontStyle.Bold)
-            Me.lblPhase.Location = New Drawing.Point(12, 9)
-            Me.lblPhase.Name = "lblPhase"
-            Me.lblPhase.Size = New Drawing.Size(200, 30)
-            Me.lblPhase.Text = "Phase: WAITING"
-            '
-            'lblRound (ラウンド数)
-            '
-            Me.lblRound.Location = New Drawing.Point(218, 15)
-            Me.lblRound.Name = "lblRound"
-            Me.lblRound.Size = New Drawing.Size(100, 23)
-            Me.lblRound.Text = "Round: 0"
-            '
-            'lblChips (所持チップ表示)
-            '
-            Me.lblChips.Font = New Drawing.Font("Segoe UI", 10.0!, Drawing.FontStyle.Bold)
-            Me.lblChips.ForeColor = Drawing.Color.Goldenrod
-            Me.lblChips.Location = New Drawing.Point(324, 15)
-            Me.lblChips.Name = "lblChips"
-            Me.lblChips.Size = New Drawing.Size(150, 23)
-            Me.lblChips.Text = "Chips: 1000"
-            '
-            'pnlPlayer (プレイヤー側のカード配置エリア)
-            '
-            Me.pnlPlayer.BorderStyle = BorderStyle.FixedSingle
-            Me.pnlPlayer.Location = New Drawing.Point(50, 60)
-            Me.pnlPlayer.Name = "pnlPlayer"
-            Me.pnlPlayer.Size = New Drawing.Size(300, 150)
-            Me.pnlPlayer.TabIndex = 5
-            '
-            'lblPlayerScore (プレイヤーの点数)
-            '
-            Me.lblPlayerScore.Location = New Drawing.Point(50, 215)
-            Me.lblPlayerScore.Name = "lblPlayerScore"
-            Me.lblPlayerScore.Size = New Drawing.Size(300, 23)
-            Me.lblPlayerScore.Text = "Player Score: 0"
-            Me.lblPlayerScore.TextAlign = Drawing.ContentAlignment.MiddleCenter
-            '
-            'pnlBanker (バンカー側のカード配置エリア)
-            '
-            Me.pnlBanker.BorderStyle = BorderStyle.FixedSingle
-            Me.pnlBanker.Location = New Drawing.Point(400, 60)
-            Me.pnlBanker.Name = "pnlBanker"
-            Me.pnlBanker.Size = New Drawing.Size(300, 150)
-            Me.pnlBanker.TabIndex = 6
-            '
-            'lblBankerScore (バンカーの点数)
-            '
-            Me.lblBankerScore.Location = New Drawing.Point(400, 215)
-            Me.lblBankerScore.Name = "lblBankerScore"
-            Me.lblBankerScore.Size = New Drawing.Size(300, 23)
-            Me.lblBankerScore.Text = "Banker Score: 0"
-            Me.lblBankerScore.TextAlign = Drawing.ContentAlignment.MiddleCenter
-            '
-            'grpBet (ベット操作エリア)
-            '
-            Me.grpBet.Location = New Drawing.Point(50, 260)
-            Me.grpBet.Name = "grpBet"
-            Me.grpBet.Size = New Drawing.Size(650, 100)
-            Me.grpBet.TabIndex = 2
-            Me.grpBet.TabStop = False
-            Me.grpBet.Text = "Betting Area"
-            '
-            'btnNext (次へボタン)
-            '
-            Me.btnNext.Enabled = False
-            Me.btnNext.Location = New Drawing.Point(556, 380)
-            Me.btnNext.Name = "btnNext"
-            Me.btnNext.Size = New Drawing.Size(144, 40)
-            Me.btnNext.TabIndex = 3
-            Me.btnNext.Text = "Next Round"
-            Me.btnNext.UseVisualStyleBackColor = True
-            '
-            'btnRules (ルール確認ボタン)
-            '
-            Me.btnRules.Location = New Drawing.Point(50, 380)
-            Me.btnRules.Name = "btnRules"
-            Me.btnRules.Size = New Drawing.Size(100, 40)
-            Me.btnRules.TabIndex = 4
-            Me.btnRules.Text = "Show Rules"
-            Me.btnRules.UseVisualStyleBackColor = True
-            '
-            'txtLog (ゲームログ)
-            '
-            Me.txtLog.Location = New Drawing.Point(50, 440)
-            Me.txtLog.Multiline = True
-            Me.txtLog.Name = "txtLog"
-            Me.txtLog.ReadOnly = True
-            Me.txtLog.ScrollBars = ScrollBars.Vertical
-            Me.txtLog.Size = New Drawing.Size(650, 100)
-            Me.txtLog.TabIndex = 7
-            '
-            'FormGame
-            '
-            Me.AutoScaleDimensions = New Drawing.SizeF(7.0!, 15.0!)
-            Me.AutoScaleMode = AutoScaleMode.Font
-            Me.ClientSize = New Drawing.Size(750, 560)
-            Me.Controls.Add(Me.txtLog)
-            Me.Controls.Add(Me.lblChips)
-            Me.Controls.Add(Me.lblBankerScore)
-            Me.Controls.Add(Me.pnlBanker)
-            Me.Controls.Add(Me.lblPlayerScore)
-            Me.Controls.Add(Me.pnlPlayer)
-            Me.Controls.Add(Me.btnRules)
-            Me.Controls.Add(Me.btnNext)
-            Me.Controls.Add(Me.grpBet)
-            Me.Controls.Add(Me.lblRound)
-            Me.Controls.Add(Me.lblPhase)
-            Me.Name = "FormGame"
-            Me.Text = "Baccarat Game Table"
-            Me.ResumeLayout(False)
-            Me.PerformLayout()
+            lblPhase = New Label()
+            lblRound = New Label()
+            grpBet = New GroupBox()
+            btnNext = New Button()
+            btnRules = New Button()
+            pnlPlayer = New Panel()
+            pnlBanker = New Panel()
+            lblPlayerScore = New Label()
+            lblBankerScore = New Label()
+            lblChips = New Label()
+            txtLog = New TextBox()
+            SuspendLayout()
+            ' 
+            ' lblPhase
+            ' 
+            lblPhase.Font = New Font("Segoe UI", 12.0F, FontStyle.Bold)
+            lblPhase.Location = New Point(16, 12)
+            lblPhase.Name = "lblPhase"
+            lblPhase.Size = New Size(260, 36)
+            lblPhase.TabIndex = 12
+            lblPhase.Text = "Phase: WAITING"
+            ' 
+            ' lblRound
+            ' 
+            lblRound.Location = New Point(290, 16)
+            lblRound.Name = "lblRound"
+            lblRound.Size = New Size(140, 28)
+            lblRound.TabIndex = 11
+            lblRound.Text = "Round: 0"
+            ' 
+            ' grpBet
+            ' 
+            grpBet.Location = New Point(60, 320)
+            grpBet.Margin = New Padding(6)
+            grpBet.Name = "grpBet"
+            grpBet.Padding = New Padding(6)
+            grpBet.Size = New Size(840, 140)
+            grpBet.TabIndex = 2
+            grpBet.TabStop = False
+            grpBet.Text = "Betting Area"
+            ' 
+            ' btnNext
+            ' 
+            btnNext.Enabled = False
+            btnNext.Location = New Point(760, 18)
+            btnNext.Margin = New Padding(6)
+            btnNext.Name = "btnNext"
+            btnNext.Size = New Size(140, 36)
+            btnNext.TabIndex = 3
+            btnNext.Text = "Next Round"
+            btnNext.UseVisualStyleBackColor = True
+            ' 
+            ' btnRules
+            ' 
+            btnRules.Location = New Point(60, 18)
+            btnRules.Margin = New Padding(6)
+            btnRules.Name = "btnRules"
+            btnRules.Size = New Size(120, 36)
+            btnRules.TabIndex = 4
+            btnRules.Text = "Show Rules"
+            btnRules.UseVisualStyleBackColor = True
+            ' 
+            ' pnlPlayer
+            ' 
+            pnlPlayer.BorderStyle = BorderStyle.FixedSingle
+            pnlPlayer.Location = New Point(60, 64)
+            pnlPlayer.Margin = New Padding(6)
+            pnlPlayer.Name = "pnlPlayer"
+            pnlPlayer.Size = New Size(380, 220)
+            pnlPlayer.TabIndex = 5
+            ' 
+            ' pnlBanker
+            ' 
+            pnlBanker.BorderStyle = BorderStyle.FixedSingle
+            pnlBanker.Location = New Point(520, 64)
+            pnlBanker.Margin = New Padding(6)
+            pnlBanker.Name = "pnlBanker"
+            pnlBanker.Size = New Size(380, 220)
+            pnlBanker.TabIndex = 6
+            ' 
+            ' lblPlayerScore
+            ' 
+            lblPlayerScore.Location = New Point(60, 296)
+            lblPlayerScore.Name = "lblPlayerScore"
+            lblPlayerScore.Size = New Size(380, 28)
+            lblPlayerScore.TabIndex = 10
+            lblPlayerScore.Text = "Player Score: 0"
+            lblPlayerScore.TextAlign = ContentAlignment.MiddleCenter
+            ' 
+            ' lblBankerScore
+            ' 
+            lblBankerScore.Location = New Point(520, 296)
+            lblBankerScore.Name = "lblBankerScore"
+            lblBankerScore.Size = New Size(380, 28)
+            lblBankerScore.TabIndex = 9
+            lblBankerScore.Text = "Banker Score: 0"
+            lblBankerScore.TextAlign = ContentAlignment.MiddleCenter
+            ' 
+            ' lblChips
+            ' 
+            lblChips.Font = New Font("Segoe UI", 10.0F, FontStyle.Bold)
+            lblChips.ForeColor = Color.Goldenrod
+            lblChips.Location = New Point(440, 16)
+            lblChips.Name = "lblChips"
+            lblChips.Size = New Size(140, 28)
+            lblChips.TabIndex = 8
+            lblChips.Text = "Chips: 1000"
+            ' 
+            ' txtLog
+            ' 
+            txtLog.Location = New Point(60, 470)
+            txtLog.Margin = New Padding(6)
+            txtLog.Multiline = True
+            txtLog.Name = "txtLog"
+            txtLog.ReadOnly = True
+            txtLog.ScrollBars = ScrollBars.Vertical
+            txtLog.Size = New Size(840, 220)
+            txtLog.TabIndex = 7
+            ' 
+            ' FormGame
+            ' 
+            AutoScaleDimensions = New SizeF(8.0F, 20.0F)
+            AutoScaleMode = AutoScaleMode.Font
+            ClientSize = New Size(960, 720)
+            Controls.Add(txtLog)
+            Controls.Add(lblChips)
+            Controls.Add(lblBankerScore)
+            Controls.Add(pnlBanker)
+            Controls.Add(lblPlayerScore)
+            Controls.Add(pnlPlayer)
+            Controls.Add(btnRules)
+            Controls.Add(btnNext)
+            Controls.Add(grpBet)
+            Controls.Add(lblRound)
+            Controls.Add(lblPhase)
+            Margin = New Padding(6)
+            Name = "FormGame"
+            Text = "Baccarat Game Table"
+            ResumeLayout(False)
+            PerformLayout()
         End Sub
 
         Friend WithEvents lblPhase As Label

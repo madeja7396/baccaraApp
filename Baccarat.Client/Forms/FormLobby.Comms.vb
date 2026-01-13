@@ -12,6 +12,10 @@ Namespace Forms
         Private _framer As LineFramer
         Private _gameState As ClientGameState
 
+        Private _gameForm As FormGame
+        ' Žè“®ŒŸØ’†‚ÍŽ©“®BET‚ðØ‚é
+        Private _disableAutoBet As Boolean = True
+
         Private Sub OnFormLoad(sender As Object, e As EventArgs) Handles MyBase.Load
             _tcp = New TcpSockets()
             _tcp.SynchronizingObject = Me
@@ -85,10 +89,16 @@ Namespace Forms
                         UiLog($"[PHASE] {_gameState.Phase}, round={_gameState.RoundIndex}")
                         ' Auto BET when entering BETTING (simple, fixed amount)
                         If _gameState.Phase = GamePhase.BETTING AndAlso _gameState.PlayerId > 0 Then
-                            Dim betAmount As Integer = Math.Min(100, If(_gameState.PlayerId = 1, _gameState.ChipsP1, _gameState.ChipsP2))
-                            Dim target As String = If(_gameState.PlayerId = 1, "PLAYER", "BANKER")
-                            SendLine($"{CommandNames.BET},{_gameState.PlayerId},{target},{betAmount}")
-                            UiLog($"[SEND] BET auto: {target},{betAmount}")
+                            If _disableAutoBet Then
+                                UiLog("[INFO] Auto-BET disabled for manual UI testing")
+                            ElseIf _gameForm Is Nothing OrElse _gameForm.IsDisposed Then
+                                Dim betAmount As Integer = Math.Min(100, If(_gameState.PlayerId = 1, _gameState.ChipsP1, _gameState.ChipsP2))
+                                Dim target As String = If(_gameState.PlayerId = 1, "PLAYER", "BANKER")
+                                SendLine($"{CommandNames.BET},{_gameState.PlayerId},{target},{betAmount}")
+                                UiLog($"[SEND] BET auto: {target},{betAmount}")
+                            Else
+                                UiLog("[INFO] Manual UI present - skipping auto-BET")
+                            End If
                         End If
                     End If
                 Case CommandNames.BET_ACK
@@ -112,6 +122,20 @@ Namespace Forms
                 Case CommandNames.ERROR
                     UiLog($"[ERROR] {If(parts.Length > 1, parts(1), "")}")
             End Select
+
+            ' Update FormGame UI if present
+            Try
+                If Me.InvokeRequired Then
+                    Me.Invoke(Sub() UpdateGameForm())
+                Else
+                    UpdateGameForm()
+                End If
+            Catch ex As Exception
+                UiLog($"[ERROR] UpdateGameForm failed: {ex.Message}")
+            End Try
+
+            ' Show game UI after welcome
+            If Me.InvokeRequired Then Me.Invoke(Sub() ShowGameForm()) Else ShowGameForm()
         End Sub
 
         Private Sub SendLine(text As String)
@@ -126,6 +150,30 @@ Namespace Forms
             Else
                 txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] {line}" & Environment.NewLine)
                 txtLog.ScrollToCaret()
+            End If
+        End Sub
+
+        ' Show FormGame on UI thread
+        Private Sub ShowGameForm()
+            Try
+                If _gameForm Is Nothing OrElse _gameForm.IsDisposed Then
+                    _gameForm = New FormGame(_gameState, AddressOf SendLine)
+                    _gameForm.Show()
+                    UiLog("[DEBUG] FormGame shown")
+                Else
+                    _gameForm.BringToFront()
+                    UiLog("[DEBUG] FormGame brought to front")
+                End If
+                Me.Hide()
+            Catch ex As Exception
+                UiLog($"[ERROR] ShowGameForm exception: {ex.Message}")
+            End Try
+        End Sub
+
+        Private Sub UpdateGameForm()
+            If _gameForm IsNot Nothing AndAlso Not _gameForm.IsDisposed Then
+                _gameForm.ApplyPhase(_gameState.Phase)
+                _gameForm.UpdateHeader()
             End If
         End Sub
     End Class
