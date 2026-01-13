@@ -70,8 +70,13 @@ Namespace Forms
                     If parts.Length >= 5 Then
                         Integer.TryParse(parts(1), _gameState.PlayerId)
                         Integer.TryParse(parts(3), _gameState.MaxRounds)
-                        Integer.TryParse(parts(4), _gameState.ChipsP1)
-                        _gameState.ChipsP2 = _gameState.ChipsP1
+                        Dim init As Integer = 0
+                        Integer.TryParse(parts(4), init)
+                        If _gameState.PlayerId = 1 Then
+                            _gameState.ChipsP1 = init
+                        ElseIf _gameState.PlayerId = 2 Then
+                            _gameState.ChipsP2 = init
+                        End If
                         UiLog($"[WELCOME] playerId={_gameState.PlayerId}")
                         ' Auto send READY to simplify flow
                         SendLine(CommandNames.READY)

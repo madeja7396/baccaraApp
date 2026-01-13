@@ -34,7 +34,7 @@ Namespace Forms
             ' 
             ' lblPhase
             ' 
-            lblPhase.Font = New Font("Segoe UI", 12.0F, FontStyle.Bold)
+            lblPhase.Font = New Font("Segoe UI", 12F, FontStyle.Bold)
             lblPhase.Location = New Point(16, 12)
             lblPhase.Name = "lblPhase"
             lblPhase.Size = New Size(260, 36)
@@ -73,10 +73,10 @@ Namespace Forms
             ' 
             ' btnRules
             ' 
-            btnRules.Location = New Point(60, 18)
+            btnRules.Location = New Point(60, 640)
             btnRules.Margin = New Padding(6)
             btnRules.Name = "btnRules"
-            btnRules.Size = New Size(120, 36)
+            btnRules.Size = New Size(129, 56)
             btnRules.TabIndex = 4
             btnRules.Text = "Show Rules"
             btnRules.UseVisualStyleBackColor = True
@@ -119,7 +119,7 @@ Namespace Forms
             ' 
             ' lblChips
             ' 
-            lblChips.Font = New Font("Segoe UI", 10.0F, FontStyle.Bold)
+            lblChips.Font = New Font("Segoe UI", 10F, FontStyle.Bold)
             lblChips.ForeColor = Color.Goldenrod
             lblChips.Location = New Point(440, 16)
             lblChips.Name = "lblChips"
@@ -135,21 +135,21 @@ Namespace Forms
             txtLog.Name = "txtLog"
             txtLog.ReadOnly = True
             txtLog.ScrollBars = ScrollBars.Vertical
-            txtLog.Size = New Size(840, 220)
+            txtLog.Size = New Size(840, 158)
             txtLog.TabIndex = 7
             ' 
             ' FormGame
             ' 
-            AutoScaleDimensions = New SizeF(8.0F, 20.0F)
+            AutoScaleDimensions = New SizeF(8F, 20F)
             AutoScaleMode = AutoScaleMode.Font
             ClientSize = New Size(960, 720)
+            Controls.Add(btnRules)
             Controls.Add(txtLog)
             Controls.Add(lblChips)
             Controls.Add(lblBankerScore)
             Controls.Add(pnlBanker)
             Controls.Add(lblPlayerScore)
             Controls.Add(pnlPlayer)
-            Controls.Add(btnRules)
             Controls.Add(btnNext)
             Controls.Add(grpBet)
             Controls.Add(lblRound)

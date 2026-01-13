@@ -148,23 +148,28 @@ Namespace Net
         End Sub
 
         Private Sub HandleStart(handle As Long)
-            ' Minimal MVP: allow START to trigger a full round immediately without requiring bets or both players.
+            ' START は「デモ（無賭け）」または「両者ベット済み」の場合のみ許可する
+            Dim b1 As BetInfo = Nothing, b2 As BetInfo = Nothing
+            Dim has1 = _state.Bets.TryGetValue(1, b1)
+            Dim has2 = _state.Bets.TryGetValue(2, b2)
+            Dim bothLocked = has1 AndAlso b1 IsNot Nothing AndAlso b1.Locked AndAlso has2 AndAlso b2 IsNot Nothing AndAlso b2.Locked
+            Dim noBets = Not has1 AndAlso Not has2
+
+            If Not bothLocked AndAlso Not noBets Then
+                ' 片方のみベットなど、中途半端な状態では決算しない
+                SendTo(handle, $"{CommandNames.ERROR},WAIT_FOR_OPPONENT")
+                Return
+            End If
+
             If _state.Phase = GamePhase.LOBBY Then
+                ' 初回でも START を許可（デモ用）。ラウンド番号を補正
                 _state.RoundIndex = If(_state.RoundIndex <= 0, 1, _state.RoundIndex)
             End If
+
             SettleRound()
         End Sub
 
         Private Sub HandleBet(handle As Long, msg As Message)
-            ' Check BET timeout
-            If _state.Phase = GamePhase.BETTING AndAlso _betStartTime <> DateTime.MinValue Then
-                If DateTime.Now.Subtract(_betStartTime).TotalSeconds > BET_TIMEOUT_SEC Then
-                    _logger.Info($"[TIMEOUT] BET phase exceeded {BET_TIMEOUT_SEC}s. Auto-settling...")
-                    SettleRound()
-                    Return
-                End If
-            End If
-
             ' Validate phase
             If _state.Phase <> GamePhase.BETTING Then
                 SendTo(handle, $"{CommandNames.BET_ACK},false,PHASE_MISMATCH")
@@ -182,7 +187,6 @@ Namespace Net
             End If
 
             If msg.Params.Length = 3 Then
-                ' playerId,target,amount
                 If Not Integer.TryParse(msg.Params(0), pId) Then
                     SendTo(handle, $"{CommandNames.BET_ACK},false,BAD_PLAYER")
                     Return
@@ -231,7 +235,11 @@ Namespace Net
                 Return
             End If
 
-            ' Accept bet
+            ' Accept bet; if this is the first bet in this round, (re)start the bet timer window
+            If _state.Bets.Count = 0 Then
+                _betStartTime = DateTime.Now
+            End If
+
             Dim bet = New BetInfo With {.Target = target, .Amount = amount, .Locked = True}
             _state.Bets(pId) = bet
             SendTo(handle, $"{CommandNames.BET_ACK},true")
