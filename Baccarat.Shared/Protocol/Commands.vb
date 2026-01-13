@@ -40,5 +40,7 @@ Namespace Protocol
         Public Const GAME_OVER As String = "GAME_OVER"
         Public Const [ERROR] As String = "ERROR"
         Public Const BYE As String = "BYE"
+        ' Minimal-MVP control to trigger a round without bets
+        Public Const START As String = "START"
     End Module
 End Namespace

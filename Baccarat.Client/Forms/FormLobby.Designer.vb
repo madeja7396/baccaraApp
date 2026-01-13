@@ -2,7 +2,7 @@ Imports System.Windows.Forms
 
 Namespace Forms
     Partial Class FormLobby
-        Inherits Form
+        Inherits System.Windows.Forms.Form
 
         ' --- 共同開発者向けガイド ---
         ' このフォームは「接続・待機」画面です。

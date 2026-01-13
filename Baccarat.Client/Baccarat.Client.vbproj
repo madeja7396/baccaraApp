@@ -33,6 +33,12 @@
     <Folder Include="assets\cards\" />
   </ItemGroup>
 
+  <!-- Exclude accidentally added duplicate resx to avoid MSB3577 -->
+  <ItemGroup>
+    <EmbeddedResource Remove="Forms\FormLobby.Comms.resx" />
+    <None Include="Forms\FormLobby.Comms.resx" />
+  </ItemGroup>
+
   <!-- Copy BMP assets to output when present -->
   <ItemGroup>
     <Content Include="assets\cards\**\*.bmp">

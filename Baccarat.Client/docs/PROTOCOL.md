@@ -7,6 +7,7 @@
 | HELLO,nickname | C→S | 接続直後に送信。nickname 必須。 |
 | WELCOME,playerId,... | S→C | playerId 付与と初期値通知。 |
 | READY | C→S | プレイヤー準備完了通知。2人揃いで開始。 |
+| START | C→S | MVP用。即ラウンド開始トリガー。ベット無しでも DEAL/RESULT を返す。 |
 | PHASE,phase,round | S→C | サーバ権威の Phase 遷移通知。 |
 | BET,target,amount | C→S | Phase=BETTING のみ受理。 |
 | BET_ACK,ok,reason | S→C | BET の検証結果（省略可）。 |

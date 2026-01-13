@@ -13,6 +13,7 @@ Namespace Forms
         Private _gameState As ClientGameState
 
         Private _gameForm As FormGame
+        Private _gameShown As Boolean = False
         ' Žè“®ŒŸØ’†‚ÍŽ©“®BET‚ðØ‚é
         Private _disableAutoBet As Boolean = True
 
@@ -75,6 +76,7 @@ Namespace Forms
                         ' Auto send READY to simplify flow
                         SendLine(CommandNames.READY)
                         UiLog("[SEND] READY (auto)")
+                        If Not _gameShown Then ShowGameForm()
                     End If
                 Case CommandNames.PHASE
                     If parts.Length >= 3 Then
@@ -87,6 +89,7 @@ Namespace Forms
                             Case "GAMEOVER" : _gameState.Phase = GamePhase.GAMEOVER
                         End Select
                         UiLog($"[PHASE] {_gameState.Phase}, round={_gameState.RoundIndex}")
+                        If Not _gameShown Then ShowGameForm()
                         ' Auto BET when entering BETTING (simple, fixed amount)
                         If _gameState.Phase = GamePhase.BETTING AndAlso _gameState.PlayerId > 0 Then
                             If _disableAutoBet Then
@@ -108,13 +111,24 @@ Namespace Forms
                     End If
                 Case CommandNames.DEAL
                     If parts.Length >= 3 Then
+                        _gameState.LastPlayerCards = parts(1)
+                        _gameState.LastBankerCards = parts(2)
                         UiLog($"[DEAL] Player: {parts(1)}, Banker: {parts(2)}")
+                        If _gameForm IsNot Nothing AndAlso Not _gameForm.IsDisposed Then
+                            _gameForm.ShowDeal(parts(1), parts(2))
+                        End If
                     End If
                 Case CommandNames.ROUND_RESULT
                     If parts.Length >= 6 Then
+                        _gameState.LastWinner = ParseWinner(parts(1))
+                        Integer.TryParse(parts(2), _gameState.LastPayoutP1)
+                        Integer.TryParse(parts(3), _gameState.LastPayoutP2)
                         Integer.TryParse(parts(4), _gameState.ChipsP1)
                         Integer.TryParse(parts(5), _gameState.ChipsP2)
                         UiLog($"[RESULT] Winner={parts(1)}, Chips P1={_gameState.ChipsP1}, P2={_gameState.ChipsP2}")
+                        If _gameForm IsNot Nothing AndAlso Not _gameForm.IsDisposed Then
+                            _gameForm.ApplyRoundResult(parts(1), _gameState.LastPayoutP1, _gameState.LastPayoutP2, _gameState.ChipsP1, _gameState.ChipsP2)
+                        End If
                     End If
                 Case CommandNames.GAME_OVER
                     _gameState.Phase = GamePhase.GAMEOVER
@@ -133,10 +147,15 @@ Namespace Forms
             Catch ex As Exception
                 UiLog($"[ERROR] UpdateGameForm failed: {ex.Message}")
             End Try
-
-            ' Show game UI after welcome
-            If Me.InvokeRequired Then Me.Invoke(Sub() ShowGameForm()) Else ShowGameForm()
         End Sub
+
+        Private Function ParseWinner(w As String) As Winner
+            Select Case w.Trim().ToUpperInvariant()
+                Case "PLAYER" : Return Winner.Player
+                Case "BANKER" : Return Winner.Banker
+                Case Else : Return Winner.Tie
+            End Select
+        End Function
 
         Private Sub SendLine(text As String)
             If _handle = -1 Then Return
@@ -159,6 +178,7 @@ Namespace Forms
                 If _gameForm Is Nothing OrElse _gameForm.IsDisposed Then
                     _gameForm = New FormGame(_gameState, AddressOf SendLine)
                     _gameForm.Show()
+                    _gameShown = True
                     UiLog("[DEBUG] FormGame shown")
                 Else
                     _gameForm.BringToFront()

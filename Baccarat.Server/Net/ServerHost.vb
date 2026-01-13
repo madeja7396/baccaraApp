@@ -79,6 +79,7 @@ Namespace Net
                 Case CommandNames.HELLO : HandleHello(handle, msg)
                 Case CommandNames.READY : HandleReady(handle)
                 Case CommandNames.BET : HandleBet(handle, msg)
+                Case CommandNames.START : HandleStart(handle)
                 Case Else
                     _logger.Error($"Unsupported command {msg.Command}")
                     SendTo(handle, $"{CommandNames.ERROR},UNSUPPORTED")
@@ -144,6 +145,14 @@ Namespace Net
                 Dim line = $"{CommandNames.PHASE},{GamePhase.BETTING},{_state.RoundIndex}"
                 Broadcast(line)
             End If
+        End Sub
+
+        Private Sub HandleStart(handle As Long)
+            ' Minimal MVP: allow START to trigger a full round immediately without requiring bets or both players.
+            If _state.Phase = GamePhase.LOBBY Then
+                _state.RoundIndex = If(_state.RoundIndex <= 0, 1, _state.RoundIndex)
+            End If
+            SettleRound()
         End Sub
 
         Private Sub HandleBet(handle As Long, msg As Message)

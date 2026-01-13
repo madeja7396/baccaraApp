@@ -85,8 +85,9 @@ Namespace Forms
 
         Private Sub OnNextClick(sender As Object, e As EventArgs)
             Try
-                AppendLog("[SEND] READY")
-                _send.Invoke(CommandNames.READY)
+                ' MVP flow: trigger next round start explicitly
+                AppendLog("[SEND] START")
+                _send.Invoke(CommandNames.START)
                 btnNext.Enabled = False
             Catch
             End Try
@@ -102,7 +103,24 @@ Namespace Forms
 
         Public Sub ApplyPhase(p As GamePhase)
             lblPhase.Text = $"Phase: {p}"
-            grpBet.Enabled = (p = GamePhase.BETTING)
+            If p = GamePhase.BETTING Then
+                ' Re-enable betting UI each betting phase
+                If btnBet IsNot Nothing Then btnBet.Enabled = True
+                grpBet.Enabled = True
+                Try
+                    Dim chips = If(_state.PlayerId = 1, _state.ChipsP1, _state.ChipsP2)
+                    If numAmount IsNot Nothing Then
+                        numAmount.Maximum = Math.Max(1, chips)
+                        If numAmount.Value < numAmount.Minimum Then numAmount.Value = numAmount.Minimum
+                        If numAmount.Value > numAmount.Maximum Then numAmount.Value = numAmount.Maximum
+                    End If
+                    If radPlayer IsNot Nothing Then radPlayer.Checked = True
+                Catch
+                End Try
+            Else
+                grpBet.Enabled = False
+            End If
+            ' Next is available at RESULT only
             btnNext.Enabled = (p = GamePhase.RESULT)
             btnRules.Enabled = True
         End Sub
@@ -112,7 +130,10 @@ Namespace Forms
             Dim chips = If(_state.PlayerId = 1, _state.ChipsP1, _state.ChipsP2)
             lblChips.Text = $"Chips: {chips}"
             Try
-                If numAmount IsNot Nothing Then numAmount.Maximum = Math.Max(1, chips)
+                If numAmount IsNot Nothing Then
+                    numAmount.Maximum = Math.Max(1, chips)
+                    If numAmount.Value > numAmount.Maximum Then numAmount.Value = numAmount.Maximum
+                End If
             Catch
             End Try
         End Sub
@@ -163,7 +184,7 @@ Namespace Forms
             _state.ChipsP1 = chipsP1
             _state.ChipsP2 = chipsP2
             UpdateHeader()
-            ' re-enable bet UI for next betting phase (will be gated by ApplyPhase)
+            ' Betting will be re-enabled on next ApplyPhase(BETTING)
             grpBet.Enabled = False
         End Sub
     End Class
