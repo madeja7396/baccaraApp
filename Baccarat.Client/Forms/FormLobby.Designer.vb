@@ -28,6 +28,8 @@ Namespace Forms
             lblStatus = New Label()
             Label1 = New Label()
             btnDisconnect = New Button()
+
+
             SuspendLayout()
             ' 
             ' txtIp
@@ -144,5 +146,7 @@ Namespace Forms
         Friend WithEvents lblStatus As Label
         Friend WithEvents Label1 As Label
         Friend WithEvents btnDisconnect As Button
+        Friend WithEvents tcp As Experiment.TcpSocket.TcpSockets
+
     End Class
 End Namespace

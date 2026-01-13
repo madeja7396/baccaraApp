@@ -12,7 +12,7 @@ Namespace Forms
     ''' </summary>
     ''' <remarks>
     ''' 【共同開発者向けUI実装ガイド】
-    ''' 
+    '''
     ''' 1. Phaseによる制御 (重要)
     '''    - `ApplyPhase(GamePhase)` メソッド内で、現在のフェーズに応じてコントロールの有効/無効を切り替えます。
     '''      (例: BETTING中のみベットボタンを有効化)
@@ -294,9 +294,25 @@ Namespace Forms
             End If
         End Sub
 
+        Private ReadOnly Property IsDesigner As Boolean
+            Get
+                Return System.ComponentModel.LicenseManager.UsageMode =
+               System.ComponentModel.LicenseUsageMode.Designtime
+            End Get
+        End Property
+
         Private Sub FormGame_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         End Sub
+
+        Private Sub pnlPlayer_Paint(sender As Object, e As PaintEventArgs) Handles pnlPlayer.Paint
+
+        End Sub
+
+        Private Sub grpBet_Enter(sender As Object, e As EventArgs) Handles grpBet.Enter
+
+        End Sub
+
     End Class
 
 End Namespace

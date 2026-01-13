@@ -16,7 +16,7 @@ Imports System.Reflection
 <Assembly: System.Reflection.AssemblyCompanyAttribute("Baccarat.Server"),  _
  Assembly: System.Reflection.AssemblyConfigurationAttribute("Debug"),  _
  Assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0"),  _
- Assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fe21d0312e51eb2184a5139a1f54ed837e636f5e"),  _
+ Assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9128bd9eed056677886988fce21b265abb6e7f38"),  _
  Assembly: System.Reflection.AssemblyProductAttribute("Baccarat.Server"),  _
  Assembly: System.Reflection.AssemblyTitleAttribute("Baccarat.Server"),  _
  Assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0"),  _
